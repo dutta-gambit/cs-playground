@@ -567,6 +567,256 @@ Typical Limits:
 
 ---
 
+## Types of Load Balancers 
+
+ - Hardware Load Balancing (Aplication specific integrated circuits[ASICs], Field Programmable Gate Arrays[FPGAs])
+ - Software Load Balancing (NGINX, HAProxy, Apache HTTP Server)
+ - Cloud Load Balancing (AWS ELB, Google Cloud Load Balancing, Azure Load Balancer)
+ - DNS Load Balancing (Route 53, Cloudflare DNS)
+ - Global Server Load Balancing (GSLB) - DNS based load balancing across multiple data centers. It combines DNS load balancing with health checks and routing policies to direct traffic to the most appropriate data center.
+ - Layer 4 Load Balancing (TCP/UDP)
+ - Layer 7 Load Balancing (HTTP/HTTPS)
+
+---
+
+## � Layer 4 vs Layer 7 Load Balancing (Deep Dive)
+
+### The OSI Model Context
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│ Layer 7 - Application   │ HTTP, HTTPS, WebSocket, gRPC             │ ← L7 LB
+├─────────────────────────────────────────────────────────────────────┤
+│ Layer 4 - Transport     │ TCP, UDP (ports, connections)             │ ← L4 LB
+├─────────────────────────────────────────────────────────────────────┤
+│ Layer 3 - Network       │ IP (routing, addressing)                  │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Quick Comparison
+
+| Feature | L4 Load Balancer | L7 Load Balancer |
+|---------|------------------|------------------|
+| **Operates at** | TCP/UDP | HTTP/HTTPS |
+| **Can see** | IP, Port, Protocol | Headers, URL, body |
+| **TLS Termination** | No (passes through) | Yes (decrypts) |
+| **Speed** | ⚡ Very fast | Slower (parsing) |
+| **TCP Connections** | Same (passthrough) | New (proxy) |
+| **Example** | AWS NLB | NGINX, AWS ALB |
+
+---
+
+### 🔌 Connection Handling: The Critical Difference
+
+#### L4 LB: SAME TCP Connection (Passthrough)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  Client                    L4 LB                         Backend            │
+│       │                        │                              │             │
+│       │ ══════ TCP SYN ═══════>│ ════ TCP SYN ═══════════════>│             │
+│       │<══════ TCP SYN-ACK ════│<════ TCP SYN-ACK ════════════│             │
+│       │ ══════ DATA ══════════>│ Just rewrites IP/Port        │             │
+│       │                        │ ════ DATA ══════════════════>│             │
+│       │<══════ RESPONSE ═══════│<════ RESPONSE ═══════════════│             │
+│                                                                             │
+│   ONE CONTINUOUS TCP CONNECTION                                             │
+│   LB modifies packet headers only - doesn't read content                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+#### L7 LB: TWO Separate TCP Connections (Proxy)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  Client                         L7 LB                        Backend        │
+│       │                            │                              │         │
+│       │ ════ TCP HANDSHAKE 1 ═════>│                              │         │
+│       │<════ TCP HANDSHAKE 1 ══════│                              │         │
+│       │ ════ TLS HANDSHAKE ═══════>│                              │         │
+│       │<════ TLS HANDSHAKE ════════│                              │         │
+│       │ ══ ENCRYPTED REQUEST ═════>│                              │         │
+│       │                            │                              │         │
+│       │                   ┌────────┴────────┐                     │         │
+│       │                   │ DECRYPTS & READS│                     │         │
+│       │                   │ GET /api/users  │                     │         │
+│       │                   │ Host: api.com   │                     │         │
+│       │                   └────────┬────────┘                     │         │
+│       │                            │                              │         │
+│       │                            │ ════ TCP HANDSHAKE 2 ═══════>│         │
+│       │                            │ ════ HTTP REQUEST ══════════>│         │
+│       │                            │<════ HTTP RESPONSE ══════════│         │
+│       │<══ ENCRYPTED RESPONSE ═════│                              │         │
+│                                                                             │
+│   CONNECTION 1                                    CONNECTION 2              │
+│   Client ←──────────────→ LB ←─────────────────────────→ Backend            │
+│                                                                             │
+│   TWO COMPLETELY SEPARATE TCP CONNECTIONS!                                  │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+#### Why L7 MUST Create New Connections (Analogy)
+
+```
+L4 LB (Forwarding Service):
+┌─────────────────┐     ┌──────────────┐     ┌─────────────────┐
+│   Sealed        │ ──→ │  Just looks  │ ──→ │   Same Sealed   │
+│   Envelope      │     │  at address  │     │   Envelope      │
+└─────────────────┘     └──────────────┘     └─────────────────┘
+                        Doesn't open it!
+
+
+L7 LB (Translation Service):
+┌─────────────────┐     ┌──────────────────────┐     ┌─────────────────┐
+│   Sealed        │ ──→ │   Opens envelope     │ ──→ │   NEW Envelope  │
+│   Envelope      │     │   Reads content      │     │   with content  │
+└─────────────────┘     │   Decides recipient  │     └─────────────────┘
+                        └──────────────────────┘
+                        MUST open to read!
+```
+
+---
+
+### 🤔 Is NGINX L4 or L7?
+
+**NGINX can be BOTH!**
+
+```nginx
+# L7 Mode (http block) - Most common
+http {
+    upstream backend {
+        server backend1:8080;
+        server backend2:8080;
+    }
+    
+    server {
+        listen 80;
+        location /api/ {
+            proxy_pass http://backend;  # Routes based on URL
+        }
+    }
+}
+
+# L4 Mode (stream block) - Raw TCP
+stream {
+    upstream mysql {
+        server db1:3306;
+        server db2:3306;
+    }
+    
+    server {
+        listen 3306;
+        proxy_pass mysql;  # Just forwards TCP packets
+    }
+}
+```
+
+| NGINX Mode | Layer | Use Case |
+|------------|-------|----------|
+| `http {}` | L7 | Web apps, APIs |
+| `stream {}` | L4 | Databases, Redis |
+
+---
+
+### 📊 Use Cases
+
+#### L4 Use Cases
+| Use Case | Why L4? |
+|----------|---------|
+| Database (MySQL) | Can't parse SQL protocol |
+| Redis/Memcached | Binary protocol |
+| Gaming servers | UDP, low latency |
+| TLS passthrough | Backend terminates TLS |
+
+#### L7 Use Cases
+| Use Case | Why L7? |
+|----------|---------|
+| Path routing | `/api/*` → API, `/web/*` → Web |
+| Host routing | `api.com` → API service |
+| A/B testing | Route % based on header/cookie |
+| Rate limiting | Per-user based on API key |
+| SSL termination | Offload TLS from backends |
+
+---
+
+### Real-World: Using Both!
+
+```
+Internet ──→ L4 LB (NLB) ──→ L7 LB (NGINX) ─┬→ API Service
+             │                  │            ├→ Auth Service
+             │                  │            └→ Web App
+             │                  │
+             │                  └── SSL termination, routing
+             └── Handles millions of connections efficiently
+
+AWS: NLB (L4) + ALB (L7)
+```
+
+---
+
+
+## statefull vs stateless Load Balancing
+    -- Stateless: stateless is when the load balancer does not store any information about the client. It treats each request as a new request. 
+    -- Stateful: stateful is when the load balancer stores information about the client. It uses this information to route the client to the same server for all requests.
+
+
+## sticky sessions
+    -- Sticky sessions, also known as session affinity, are a way to ensure that all requests from a particular client are sent to the same server. This is useful for applications that maintain session state, such as shopping carts or user sessions.
+    -- Sticky sessions can be implemented in a number of ways, such as using cookies, IP addresses, or other identifiers.
+
+
+## Redundancy and Failover strategies for Load Balancers
+
+ -- to ensure high availability and fault tolerance.
+    -- Redundancy can be achieved through several failover strategies.
+        -- Active-Passive: active load balancer handles all the traffic, while the passive load balancer is in standby mode. If the active load balancer fails, the passive load balancer takes over.
+        -- Active-Active: both load balancers are active and handle traffic. If one fails, the other takes over. This configuration provided better resource utilization and increased fault tolerance compared to the active-passive configuration.
+ -- health checks and monitoring are effective components of high availability and fault tolerance for LB.
+
+
+## Synchronization and State Sharing
+
+In stateful load balancing, multiple LB instances must stay in sync to ensure consistent session routing.
+
+### What Needs to Be Shared?
+- **Session IDs** - Which client belongs to which session
+- **Session Data** - User preferences, cart contents, auth tokens
+- **Session State** - Active/expired, last accessed time
+
+### State Sharing Mechanisms
+
+| Mechanism | Pros | Cons |
+|-----------|------|------|
+| **Shared Database** (Redis, MySQL) | Simple, reliable | Network latency, DB becomes bottleneck |
+| **Distributed Cache** (Redis Cluster) | Fast, scalable | Complexity in setup |
+| **Shared File System** | Simple | Slow, not scalable |
+| **Gossip Protocol** | No single point of failure | Eventually consistent |
+
+### Centralized State Management Pattern
+
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│   LB 1      │     │   LB 2      │     │   LB 3      │
+└──────┬──────┘     └──────┬──────┘     └──────┬──────┘
+       │                   │                   │
+       └───────────────────┼───────────────────┘
+                           │
+                           ▼
+              ┌────────────────────────┐
+              │   Centralized State    │
+              │   Store (Redis/etcd)   │
+              └────────────────────────┘
+```
+
+### Popular Tools for State Sharing
+- **Redis** - Fast in-memory store, great for session data
+- **etcd** - Distributed key-value store (used by Kubernetes)
+- **Consul** - Service discovery + KV store
+- **ZooKeeper** - Coordination service for distributed systems
+
+> ⚠️ **Single Point of Failure**: Centralized stores can become SPOFs. Use clustering/replication (Redis Sentinel, etcd cluster) for high availability.
+
+
 ## 🛠️ Hands-On Project
 
 **Goal:** Set up NGINX as a load balancer for multiple Spring Boot instances
