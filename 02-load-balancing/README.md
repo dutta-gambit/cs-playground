@@ -817,6 +817,83 @@ In stateful load balancing, multiple LB instances must stay in sync to ensure co
 > ⚠️ **Single Point of Failure**: Centralized stores can become SPOFs. Use clustering/replication (Redis Sentinel, etcd cluster) for high availability.
 
 
+## 🌍 Global Load Balancing (How Google Handles Scale)
+
+**Q: If DNS points to 1 IP, how do companies run multiple LBs?**
+
+### Techniques Used Together
+
+| Technique | How It Works |
+|-----------|--------------|
+| **DNS Round Robin** | DNS returns multiple IPs, client picks one |
+| **GeoDNS/GSLB** | Returns different IP based on user's location |
+| **Anycast** | Same IP announced from multiple datacenters (BGP magic) |
+| **VIP Failover** | Virtual IP floats between LB machines |
+
+### Anycast: Same IP, Different Servers
+
+```
+Google announces 142.250.x.x from EVERY datacenter:
+
+User in India  ──→ 142.250.x.x ──→ Mumbai DC (closest)
+User in Japan  ──→ 142.250.x.x ──→ Tokyo DC (closest)
+
+Same IP, different physical servers! Routers pick shortest path (BGP).
+```
+
+### Proof: Different DNS = Different IPs
+
+```bash
+$ dig google.com +short           # ISP DNS
+142.251.223.174
+
+$ nslookup google.com 8.8.8.8     # Google DNS
+142.250.77.110                    # ← DIFFERENT IP!
+
+
+---
+
+## Scaling of Load Balancers
+
+- Horizontal scaling: Adding more load balancers to handle increased traffic.
+- Vertical scaling: Increasing the resources of existing load balancers.
+
+
+## Impact of Load Balancers on Latency
+
+- L4 load balancers add minimal latency (microseconds) as they just forward packets.
+- L7 load balancers add more latency (milliseconds) due to SSL termination, request parsing, and routing decisions. 
+- Optimization techniques: 
+    - Geographically distribute load balancers to reduce network latency.
+    - Use connection pooling to reduce connection overhead.
+    - Implement caching (CDN or local cache) to store and serve static assets closer to users.
+    - Use SSL offloading to reduce SSL termination overhead.
+    - Protocol Optimization: Use HTTP/2 or QUIC to reduce request overhead.
+
+
+
+
+## Challenges of Load Balancers
+
+- Single point of failure: If the load balancer fails, the entire system will be unavailable.
+- Performance bottleneck: As the number of requests increases, the load balancer can become a bottleneck.
+- Security risks: Load balancers can be targets for attacks.
+- Complexity: Load balancers can be complex to configure and manage.
+- Cost: Load balancers can be expensive to purchase and maintain.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## 🛠️ Hands-On Project
 
 **Goal:** Set up NGINX as a load balancer for multiple Spring Boot instances
