@@ -81,3 +81,28 @@
 
  - Reducing Client COmplexity
     - Simplifying the client side logic by handling complex operations on the server side through the gateway.
+
+
+
+## Advantages of API Gatewat
+
+ -- Improved Performance
+    -Cache response
+    -Rate limit requests
+    -Optimise communication between client and backend services, resulting in improved performance and reduce latency for end users.
+ -- Simplifed system design
+    -Single entry point for all client requests
+    -Decoupling of client and backend services
+    -easier to manage, monitor and maintain APIs across multiple backend services.
+ -- Enhanced Security
+    - enforce authentication and authorization policies
+    - implement rate limiting
+    - encrypt data in transit
+ -- Improved scalability
+    - Load balancing
+    - horizontal scaling
+ -- Better monitoring and observability
+    - Centralized logging and metrics collection
+ -- Simplified client integration
+ -- Protocol and Data format transformation
+ -- API Versioning and Backward compatibility
