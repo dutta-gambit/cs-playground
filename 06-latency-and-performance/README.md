@@ -625,21 +625,83 @@ Capacity Planning:
 
 ## Amdahl's Law (Parallel Speedup Limit)
 
+**"You can only speed up what can be parallelized. The serial part limits everything!"**
+
+```
+Your task: 100 seconds total
+  ┌─────────┬──────────────────────────────────────────────────┐
+  │ Serial  │           Parallelizable (90%)                   │
+  │  (10%)  │                                                  │
+  │  10 sec │                   90 sec                         │
+  └─────────┴──────────────────────────────────────────────────┘
+```
+
+### Formula
+
 ```
 Speedup = 1 / (S + P/N)
 
-S = Serial portion (cannot parallelize)
-P = Parallel portion
+S = Serial fraction (0 to 1)
+P = Parallel fraction (P = 1 - S)
 N = Number of processors
-
-Example: 90% parallelizable (P=0.9, S=0.1)
-  N=2:   Speedup = 1/(0.1 + 0.9/2) = 1.82x
-  N=10:  Speedup = 1/(0.1 + 0.9/10) = 5.26x
-  N=100: Speedup = 1/(0.1 + 0.9/100) = 9.17x
-  N=∞:   Speedup = 1/0.1 = 10x MAX
-
-Even with infinite cores, 10% serial = max 10x speedup!
 ```
+
+### Visual Example
+
+```
+1 Core:
+┌─────────┬────────────────────────────────────────────────────┐
+│ 10 sec  │                     90 sec                         │ = 100 sec
+└─────────┴────────────────────────────────────────────────────┘
+
+2 Cores:
+┌─────────┬─────────────────────────────┐
+│ 10 sec  │         45 sec              │ = 55 sec (1.82x faster)
+└─────────┴─────────────────────────────┘
+
+10 Cores:
+┌─────────┬─────┐
+│ 10 sec  │9 sec│ = 19 sec (5.26x faster)
+└─────────┴─────┘
+
+∞ Cores:
+┌─────────┬┐
+│ 10 sec  ││ = 10 sec (10x faster MAX!)
+└─────────┴┘
+            └── Even with ∞ cores, can't beat serial part!
+```
+
+### Connection to System Design
+
+```
+8-Core Server Example:
+  Task: Process 1000 images
+  
+  Serial (can't parallelize):
+    - Read file list: 1 sec
+    - Write report: 1 sec
+    = 2 sec (2% serial)
+  
+  Parallel (can split):
+    - Process images: 98 sec with 1 core
+    
+  With 8 cores:
+    - Serial: 2 sec (unchanged!)
+    - Parallel: 98/8 = 12.25 sec
+    - Total: 14.25 sec
+    - Speedup: 100/14.25 = 7x (not 8x!)
+```
+
+### Common Serial Bottlenecks
+
+| Bottleneck | Why Serial | Max Speedup |
+|------------|------------|-------------|
+| DB writes (single master) | Lock contention | Limited |
+| Distributed locks | Coordination | Low |
+| Message ordering | Sequence required | 1x (no speedup!) |
+| Request parsing | Single thread reads | ~10% overhead |
+
+> 💡 **Interview Insight**: "Will more servers = more speed?" → Only for parallel parts. Identify and reduce serial portions first – that's where real gains are!
 
 ---
 
