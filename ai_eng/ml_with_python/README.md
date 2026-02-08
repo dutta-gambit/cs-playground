@@ -36,3 +36,9 @@
 
  - Classification is used when the output is categorical
  - Regression is used when the output is continuous
+
+
+ ### Clustering Vs Association
+
+ - Clustering is used when the output is categorical and the data is unlabeled
+ - Association is used when the output is categorical and the data is labeled

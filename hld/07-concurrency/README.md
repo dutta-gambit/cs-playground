@@ -6,6 +6,51 @@ Understanding concurrent systems for distributed system design.
 
 ## Fundamentals
 
+### Precise Definitions
+
+| Concept | One-Line Definition | About |
+|---------|---------------------|-------|
+| **Concurrency** | Tasks that **can** run independently | Structure / Design |
+| **Synchronization** | Ensuring **safe** access to shared data | Protection / Coordination |
+| **Parallelism** | Tasks that **do** run at the same time | Execution / Hardware |
+
+### How They Relate
+
+```
+CONCURRENCY (Design)
+     │
+     ├──── Introduces SHARED RESOURCES
+     │            │
+     │            ▼
+     │     SYNCHRONIZATION (Protection)
+     │     Needed to prevent race conditions
+     │
+     └──── Enables PARALLELISM (Execution)
+           If hardware has multiple cores
+```
+
+> 💡 **Key Insight**: Concurrency creates the NEED for synchronization (shared resources). Parallelism is a RESULT of concurrency + multiple cores.
+
+> ⚠️ **Refined Insight**: Synchronization is needed whenever you have **concurrent code with shared resources** - whether running on 1 core (interleaved) or many cores (parallel). Parallel execution makes race conditions FASTER to occur, but they can happen with plain concurrency too!
+
+### What is Interleaved Execution?
+
+```
+Interleaved = Tasks take TURNS on a single CPU (time-slicing)
+
+Thread A: ████░░░░████░░░░████
+Thread B: ░░░░████░░░░████░░░░
+          ─────────────────────▶ Time
+
+CPU runs Thread A for a bit, PAUSES it, switches to Thread B,
+then back to Thread A. Like shuffling a deck of cards!
+
+Key point: Even interleaved execution (1 CPU) can cause race conditions
+           because context switches can happen MID-OPERATION!
+```
+
+---
+
 ### What is Concurrency?
 
 **Concurrency** = Multiple tasks making progress (not necessarily simultaneously)
@@ -368,14 +413,130 @@ Use cases: Trading systems, real-time, databases
 Warning: Wrong affinity can HURT performance!
 ```
 
+### CPU Scheduling Strategies
+
+| Strategy | How It Works | Use Case |
+|----------|--------------|----------|
+| **Time Slicing (Round Robin)** | Fixed time per thread, rotate | General purpose OS |
+| **Priority Scheduling** | High priority threads run first | Real-time systems |
+| **Cooperative** | Thread voluntarily yields CPU | Old MacOS, some embedded |
+| **Preemptive** | OS can interrupt any thread | Modern OS (Linux, Windows) |
+| **Work Stealing** | Idle cores steal from busy ones | Go runtime, Java ForkJoin |
+
 ---
 
-## Network Hardware: NIC Ring Buffers
-
-### What is a Ring Buffer?
+## Execution Types
 
 ```
-Ring Buffer = Circular array, indices wrap around
+1. SEQUENTIAL (No concurrency)
+   Task A: ████████████████████
+   Task B:                     ████████████████████
+   One thing at a time, in order
+
+2. INTERLEAVED (Concurrent, 1 CPU)
+   Task A: ████░░░░████░░░░████
+   Task B: ░░░░████░░░░████░░░░
+   Tasks take turns (time slicing)
+
+3. PARALLEL (Concurrent, N CPUs)
+   Task A: ████████████████████  (CPU 1)
+   Task B: ████████████████████  (CPU 2)
+   Truly simultaneous
+
+4. PIPELINED (Overlapping stages)
+   Task 1: [Stage1][Stage2][Stage3]
+   Task 2:         [Stage1][Stage2][Stage3]
+   Task 3:                 [Stage1][Stage2][Stage3]
+   Different stages run in parallel (like assembly line)
+
+5. ASYNC/EVENT-DRIVEN (Non-blocking I/O)
+   Thread:  [Start A][Start B][Start C]...[Finish A][Finish B]
+   I/O:              ══════A══════
+                         ═══════B═══════
+   Thread doesn't wait, handles completions via callbacks
+```
+
+### Pipeline: Assembly Line for Data
+
+```
+Example: CPU Instruction Pipeline (every modern CPU!)
+
+Stages: Fetch → Decode → Execute → Memory → Writeback
+
+Without pipeline: 1 instruction per 5 cycles
+With pipeline: 1 instruction per cycle (5x throughput!)
+
+Real-world uses:
+  - Kafka (batch → compress → send → ack)
+  - Video streaming (download → decode → render)
+  - ETL jobs (extract → transform → load)
+```
+
+### Async: Don't Wait for I/O
+
+```
+Blocking (1 thread waits):
+  Thread: [Call DB]═══WAIT═══[Got result][Call API]═══WAIT═══[Done]
+  
+Async (1 thread, no wait):
+  Thread: [Start DB][Start API][Handle DB result][Handle API result]
+  I/O:    ═══DB═══════════
+               ═══API════════
+  
+  I/O happens in parallel. Thread is always busy!
+
+Real-world uses:
+  - Node.js (event loop)
+  - WebFlux/Netty (reactor pattern)
+  - Redis (single-threaded, event-driven)
+```
+
+| Type | Focus | When to Use |
+|------|-------|-------------|
+| **Pipeline** | THROUGHPUT (items/sec) | Data processing, streaming |
+| **Async** | EFFICIENCY (no wasted wait) | Many I/O operations |
+
+---
+
+## Network Hardware: NIC Deep Dive
+
+### What is a NIC?
+
+```
+NIC = Network Interface Card (hardware connecting server to network)
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         YOUR SERVER                                      │
+├─────────────────────────────────────────────────────────────────────────┤
+│  ┌────────┐    ┌────────┐    ┌────────┐                                │
+│  │  CPU   │    │  RAM   │    │  NIC   │──────▶ Network Cable/WiFi     │
+│  └────────┘    └────────┘    └────────┘                                │
+│       └─────────────┴─────────────┘                                    │
+│                   PCIe Bus                                              │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### NIC Internals
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐            │
+│  │   TX Queue   │────▶│  DMA Engine  │────▶│   PHY Chip   │──▶ Wire   │
+│  │  (send ring) │     │   (Copies    │     │  (Physical)  │            │
+│  └──────────────┘     │    without   │     └──────────────┘            │
+│                       │    CPU!)     │                                  │
+│  ┌──────────────┐     │              │     ┌──────────────┐            │
+│  │   RX Queue   │◀────│              │◀────│   PHY Chip   │◀── Wire   │
+│  │  (recv ring) │     └──────────────┘     └──────────────┘            │
+│  └──────────────┘                                                       │
+│  MAC Address: Unique hardware ID (e.g., AA:BB:CC:DD:EE:FF)             │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### Ring Buffers (TX/RX Queues)
+
+```
+Ring Buffer = Circular queue for packets
 
      ┌─────┐
   ┌──│  0  │◀── Write pointer
@@ -384,27 +545,97 @@ Ring Buffer = Circular array, indices wrap around
   │  ├─────┤
   │  │  2  │◀── Read pointer
   │  ├─────┤
-  │  │  3  │
-  │  ├─────┤
-  └─▶│  4  │── Wraps to 0!
+  └─▶│  3  │── Wraps to 0!
      └─────┘
 
-Why Ring? Fixed size, no malloc during operation, lock-free!
+TX Ring: OS writes packets → NIC reads and sends
+RX Ring: NIC writes received packets → OS reads
+
+Why Ring? Fixed size, no malloc, lock-free, very fast!
+Typical size: 256-4096 descriptors
 ```
 
-### NIC Buffers
+### DMA (Direct Memory Access)
 
 ```
-TX Ring: OS puts packets → NIC reads & sends
-RX Ring: NIC puts received packets → OS reads
+WITHOUT DMA:
+  CPU: Read byte → Write to NIC → Repeat...
+  CPU is BUSY copying!
 
-"Put on wire" = Send to physical medium:
-  Ethernet: Electrical signals
-  Fiber: Light pulses
-  WiFi: Radio waves (2.4/5 GHz)
-  
-All devices doing networking have some form of NIC!
+WITH DMA:
+  CPU: "NIC, here's the address. Copy it yourself."
+  NIC: Reads directly from RAM
+  CPU: FREE to do other work!
+
+This is why I/O is "parallel" - NIC works independently!
 ```
+
+### Interrupts vs Polling
+
+```
+INTERRUPTS (Traditional):
+  NIC: "INTERRUPT! Packet arrived!"
+  CPU: Stop, handle packet
+  Problem: 1M packets/sec = 1M interrupts!
+
+POLLING:
+  CPU: Keeps checking "Any packets?"
+  Problem: Wastes cycles when no traffic
+
+NAPI (Linux Hybrid - Best of both):
+  Low traffic → Use interrupts
+  High traffic → Switch to polling
+```
+
+### NIC Offloading Features
+
+| Feature | What NIC Does |
+|---------|---------------|
+| Checksum Offload | NIC calculates TCP/IP checksums |
+| TSO (TCP Segmentation) | NIC splits large data into packets |
+| LRO (Large Receive) | NIC combines small packets into big |
+| RSS (Receive Side Scale) | NIC distributes packets across cores |
+| VLAN Tagging | NIC handles VLAN headers |
+
+### Packet Flow: Sending
+
+```
+App → send() → OS copies to kernel buffer
+           → OS writes to TX ring
+           → NIC reads via DMA
+           → NIC calculates checksum
+           → NIC sends signals on wire
+           → NIC updates descriptor
+```
+
+### Packet Flow: Receiving
+
+```
+Wire → NIC receives signals
+    → NIC validates checksum
+    → NIC writes to RX ring via DMA
+    → NIC interrupts CPU (or polled)
+    → OS reads from RX ring
+    → OS copies to app buffer
+    → App's recv() returns
+```
+
+### NIC Interview Questions
+
+**Basic:**
+1. What is a NIC? What components does it have?
+2. What is DMA? Why important for performance?
+3. TX vs RX ring buffers - Why ring structure?
+
+**Intermediate:**
+4. Interrupts vs Polling - Tradeoffs? What is NAPI?
+5. What is RSS? Why matters for multi-core?
+6. What happens when RX ring buffer is full? (Drops!)
+
+**Advanced:**
+7. What is kernel bypass (DPDK)? When use it?
+8. Your server has 100Gbps NIC but 20Gbps actual. Why?
+9. How would you debug packet drops?
 
 ---
 
@@ -428,38 +659,191 @@ RST close: RST (immediate, may lose data!)
 | App crashed | OS sends RST |
 | Firewall blocks | May send RST |
 
----
+--- 
 
 ## The Problem: Race Conditions
 
 ### What is a Race Condition?
 
-When outcome depends on unpredictable thread timing.
+```
+A race condition happens when CORRECTNESS depends on 
+TIMING or INTERLEAVING of threads/processes.
+
+Same code, same inputs, DIFFERENT outputs depending on thread timing!
+```
+
+### Root Causes
+
+```
+1. NON-ATOMIC OPERATIONS - What looks like 1 step is multiple steps
+2. SHARED MUTABLE STATE - Multiple threads read AND write same data
+3. CPU CACHES - Each CPU has its own view of memory
+4. INSTRUCTION REORDERING - CPU/compiler changes order for optimization
+5. CONTEXT SWITCHES - OS can pause any thread at any instruction
+```
+
+---
+
+## Race Condition Types
+
+### Type 1: Read-Modify-Write
+
+```
+Three steps that should be atomic but aren't:
+  1. READ:   Get current value
+  2. MODIFY: Change it
+  3. WRITE:  Store new value
+
+If interrupted between steps → DATA CORRUPTION
+```
 
 ```java
-// SHARED VARIABLE
 int counter = 0;
 
-// Thread 1               // Thread 2
-counter++;                counter++;
+// Thread A           // Thread B
+counter++;            counter++;
 
-// Expected: counter = 2
-// Actual: could be 1 or 2!
-```
-
-### Why It Happens
-
-```
-counter++ is actually 3 operations:
-  1. READ counter (get 0)
-  2. ADD 1 (0 + 1 = 1)
-  3. WRITE counter (store 1)
-
-Thread 1:  READ(0)  ADD(1)  WRITE(1)
-Thread 2:       READ(0)  ADD(1)  WRITE(1)
+// counter++ breaks into:
+Thread A: READ(0)  ADD(1)  WRITE(1)
+Thread B:      READ(0)  ADD(1)  WRITE(1)
 
 Both read 0, both write 1 → counter = 1 (not 2!)
 ```
+
+### Type 2: Check-Then-Act (TOCTOU)
+
+```
+TOCTOU = Time Of Check To Time Of Use
+
+  1. CHECK: Is condition true?
+  2. ACT:   Do something based on check
+
+If condition CHANGES between check and act → BUG!
+```
+
+```java
+// Bank account withdrawal
+void withdraw(int amount) {
+    if (balance >= amount) {      // CHECK
+        // --- Thread B withdraws here! ---
+        balance = balance - amount;  // ACT - OVERDRAFT!
+    }
+}
+
+Thread A: balance=100, checks 100>=100? YES
+Thread B: balance=100, checks 100>=100? YES, withdraws → balance=0
+Thread A: withdraws → balance = -100!  (OVERDRAFT!)
+```
+
+### Type 3: Publishing Partially Constructed Objects
+
+```
+Making object visible BEFORE fully initialized.
+Other threads see HALF-BUILT object!
+```
+
+```java
+// "instance = new Singleton()" is 3 steps:
+1. Allocate memory (address 0x123)
+2. Initialize fields
+3. Assign reference
+
+CPU can REORDER to: 1 → 3 → 2
+
+Thread A: Allocate → Assign (VISIBLE!) → Init fields...
+Thread B: Sees instance != null → Uses it → Fields not set!
+```
+
+Fix: Use `volatile` to prevent reordering!
+
+### Type 4: Missed Signals / Lost Wakeups
+
+```
+Thread A waits for signal from Thread B.
+Thread B sends signal BEFORE Thread A starts waiting.
+Thread A waits forever (signal already gone!)
+```
+
+```java
+// Producer-Consumer
+void produce(Object o) {
+    item = o;
+    notify();  // Signal sent!
+}
+
+Object consume() {
+    while (item == null) {
+        wait();  // Wait for signal
+    }
+    return item;
+}
+
+// If produce() runs BEFORE consume() calls wait():
+notify() fires → no one waiting → SIGNAL LOST!
+consume() calls wait() → STUCK FOREVER!
+```
+
+### Type 5: Unsafe Lazy Initialization
+
+```
+Creating object "lazily" without synchronization.
+Multiple threads may create separate instances!
+```
+
+```java
+private static Connection connection;  // SHARED
+
+Connection getConnection() {
+    if (connection == null) {           // Thread A checks
+        connection = createConnection(); // Thread A creates
+    }
+    return connection;
+}
+
+// Both threads check null at same time:
+Thread A: null? YES → creates Connection1
+Thread B: null? YES → creates Connection2 (LEAK!)
+
+// Or Thread B gets Thread A's half-initialized connection!
+```
+
+### Type 6: Visibility and Memory Ordering
+
+```
+Changes by Thread A NOT VISIBLE to Thread B.
+Each CPU has its own CACHE, changes may not reach main memory!
+```
+
+```java
+boolean running = true;  // Not volatile!
+
+// Thread A
+while (running) {  // Reads from CPU cache
+    doWork();
+}
+
+// Thread B  
+running = false;   // Writes to ITS cache
+
+// Thread A never sees running=false! Loop forever!
+```
+
+Fix: Mark as `volatile` to ensure visibility!
+
+---
+
+### Summary: Race Condition Types
+
+| Type | What Happens | Example |
+|------|--------------|---------|
+| **Read-Modify-Write** | Multi-step op interrupted | counter++ |
+| **Check-Then-Act** | Condition changes mid-check | if(balance>=amt) withdraw |
+| **Partial Publication** | Object visible before built | Double-checked locking |
+| **Missed Signals** | notify() before wait() | Producer-consumer |
+| **Unsafe Lazy Init** | Multiple instances created | Singleton without sync |
+| **Visibility** | Changes not seen across threads | Non-volatile flag |
+
+> 💡 **Key Insight**: Race conditions are TIMING BUGS - may work 99% of the time, fail randomly. Prevention is easier than debugging!
 
 ---
 
