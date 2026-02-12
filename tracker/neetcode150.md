@@ -8,9 +8,9 @@
 
 | # | Problem | Difficulty | Status | Date | Revision | Notes |
 |---|---------|-----------|--------|------|----------|-------|
-| 1 | [Contains Duplicate](https://leetcode.com/problems/contains-duplicate/) | Easy | ⬜ | | | |
-| 2 | [Valid Anagram](https://leetcode.com/problems/valid-anagram/) | Easy | ⬜ | | | |
-| 3 | [Two Sum](https://leetcode.com/problems/two-sum/) | Easy | ⬜ | | | |
+| 1 | [Contains Duplicate](https://leetcode.com/problems/contains-duplicate/) | Easy | 🟢 | 2026-02-12 | | HashSet, Set.add() returns boolean |
+| 2 | [Valid Anagram](https://leetcode.com/problems/valid-anagram/) | Easy | 🟢 | 2026-02-12 | | HashMap freq count, int[26] optimal |
+| 3 | [Two Sum](https://leetcode.com/problems/two-sum/) | Easy | 🟢 | 2026-02-12 | | Single-pass HashMap, value→index pattern |
 | 4 | [Group Anagrams](https://leetcode.com/problems/group-anagrams/) | Medium | ⬜ | | | |
 | 5 | [Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/) | Medium | ⬜ | | | |
 | 6 | [Encode and Decode Strings](https://leetcode.com/problems/encode-and-decode-strings/) | Medium | ⬜ | | | |
