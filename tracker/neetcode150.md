@@ -11,12 +11,12 @@
 | 1 | [Contains Duplicate](https://leetcode.com/problems/contains-duplicate/) | Easy | 🟢 | 2026-02-12 | | HashSet, Set.add() returns boolean |
 | 2 | [Valid Anagram](https://leetcode.com/problems/valid-anagram/) | Easy | 🟢 | 2026-02-12 | | HashMap freq count, int[26] optimal |
 | 3 | [Two Sum](https://leetcode.com/problems/two-sum/) | Easy | 🟢 | 2026-02-12 | | Single-pass HashMap, value→index pattern |
-| 4 | [Group Anagrams](https://leetcode.com/problems/group-anagrams/) | Medium | ⬜ | | | |
+| 4 | [Group Anagrams](https://leetcode.com/problems/group-anagrams/) | Medium | 🟢 | 2026-02-13 | | Sort key or count key, computeIfAbsent |
 | 5 | [Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/) | Medium | ⬜ | | | |
 | 6 | [Encode and Decode Strings](https://leetcode.com/problems/encode-and-decode-strings/) | Medium | ⬜ | | | |
 | 7 | [Product of Array Except Self](https://leetcode.com/problems/product-of-array-except-self/) | Medium | ⬜ | | | |
 | 8 | [Valid Sudoku](https://leetcode.com/problems/valid-sudoku/) | Medium | ⬜ | | | |
-| 9 | [Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence/) | Medium | ⬜ | | | |
+| 9 | [Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence/) | Medium | 🟢 | 2026-02-13 | | TreeSet O(n log n), HashSet O(n) optimal |
 
 ---
 

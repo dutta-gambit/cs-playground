@@ -159,7 +159,99 @@ User user = findUser(id).orElseGet(() -> createDefaultUser());
 
 ---
 
-## 🧩 Problems (will be added as we solve them)
+## 🧩 Problems Solved
 
-*(problems and solutions will be documented below as we work through them)*
+### Pattern Summary
 
+| Problem | Data Structure | Map Usage Pattern |
+|---------|---------------|-------------------|
+| Contains Duplicate | `Set` | Existence: "seen before?" |
+| Valid Anagram | `Map<char, count>` | Frequency: "how many times?" |
+| Two Sum | `Map<value, index>` | Location: "where did I see it?" |
+| Group Anagrams | `Map<key, List>` | Grouping: "which bucket does this belong to?" |
+| Longest Consecutive Sequence | `HashSet` | Existence + sequence start: "is num-1 absent?" |
+
+---
+
+### 1. Contains Duplicate (Easy) ✅
+- **Approach:** `HashSet` — check existence with `Set.add()` returning `boolean`
+- **Time:** O(n) | **Space:** O(n)
+- **Alt:** Sort first → O(n log n) time, O(1) space
+- 📄 [ContainsDuplicate.java](./ContainsDuplicate.java)
+
+### 2. Valid Anagram (Easy) ✅
+- **Approach:** `HashMap<Character, Integer>` frequency count — increment for `s`, decrement for `t`
+- **Time:** O(n) | **Space:** O(1) — at most 26 keys
+- **Optimal:** `int[26]` array — no autoboxing, O(1) space, single loop
+- **Key trick:** `charAt(i) - 'a'` → numeric promotion (`char` widens to `int`)
+- 📄 [ValidAnagram.java](./ValidAnagram.java)
+
+### 3. Two Sum (Easy) ✅
+- **Approach:** Single-pass `HashMap<value, index>` — check complement before insert
+- **Time:** O(n) | **Space:** O(n)
+- **Key insight:** `complement = target - nums[i]`. Check BEFORE insert → prevents self-matching
+- 📄 [TwoSum.java](./TwoSum.java)
+
+### 4. Group Anagrams (Medium) ✅
+- **Approach 1:** Sort chars as key → O(n · k log k)
+- **Approach 2:** Count array `int[26]` as key → O(n · k) — use `#` separator to avoid collision
+- **Key API:** `computeIfAbsent(key, k -> new ArrayList<>())` — returns existing or newly created list
+- **Gotcha:** `List.add()` returns `boolean`, not the list. Map stores references — no re-put needed.
+- 📄 [GroupAnagrams.java](./GroupAnagrams.java)
+
+### 9. Longest Consecutive Sequence (Medium) ✅
+- **Approach 1:** `TreeSet` — sorted + deduped, iterate in order → O(n log n)
+- **Approach 2 (Optimal):** `HashSet` + "start of sequence" trick → O(n)
+  - Only count from elements where `num - 1` is NOT in set
+  - Each element visited at most twice
+- **Key insight:** TreeSet sorts (O(log n) per insert) vs HashSet (O(1) per insert)
+- 📄 [LongestConsecutiveSequence.java](./LongestConsecutiveSequence.java)
+
+---
+
+## 📚 HashMap Reference
+
+### When to use HashMap
+- **"Find if element exists"** with O(1): avoids O(n) scans
+- **"Two Sum" style:** store complements → find pairs in O(n) instead of O(n²)
+- **"Count frequency":** naturally aggregate counts while iterating
+- **"Group by" property:** use transformed keys (sorted strings, count arrays) to bucket elements
+- **"First/last occurrence":** store indices as values to remember positions
+
+### When NOT to use HashMap
+- **Need ordered iteration:** use `TreeMap` or sorted structures
+- **Memory constraints:** HashMap has overhead (keys + values + collision handling)
+- **In-place required:** HashMap uses O(n) extra space
+
+### HashMap vs Array — when to use which
+- **Array:** keys are small integers in a known range (e.g., `int[26]` for characters)
+- **HashMap:** keys are sparse, large, or non-numeric (strings, coordinates, IDs)
+- **Trade-off:** arrays = O(1) with no overhead but waste space on sparse data; HashMaps = any key type but hashing overhead
+
+---
+
+## ☕ Java Nuances Learned
+
+### `==` vs `.equals()` and the Integer Cache
+- `==` compares **references** for objects, **values** for primitives
+- `Integer` values -128 to 127 are **cached** — `==` works by coincidence, breaks outside this range
+- **Always use `.equals()`** for object comparison (or `Objects.equals()` for null-safety)
+
+### `Map.get()` returns `null`, not `0`
+- Comparing `map.get(key) != 0` causes **NullPointerException** (auto-unboxing `null`)
+- Use `containsKey()` or `getOrDefault(key, 0)` instead
+
+### `computeIfAbsent(key, k -> new ArrayList<>())`
+- Returns the value for key: **existing** if present, **newly created** if absent
+- The lambda only runs when key is absent
+- Perfect for "get or create" grouping pattern
+
+### Autoboxing costs
+- `int → Integer` (autoboxing) allocates objects on heap
+- `int[]` is always faster than `ArrayList<Integer>` — no boxing, cache-friendly, less GC pressure
+- Use `int[]` when size is known; `ArrayList` when dynamic sizing needed
+
+### Size/Length inconsistency
+- `arr.length` — field (no parentheses)
+- `str.length()` — method
+- `list.size()` — method
