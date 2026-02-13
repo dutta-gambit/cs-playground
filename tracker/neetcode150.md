@@ -12,7 +12,7 @@
 | 2 | [Valid Anagram](https://leetcode.com/problems/valid-anagram/) | Easy | 🟢 | 2026-02-12 | | HashMap freq count, int[26] optimal |
 | 3 | [Two Sum](https://leetcode.com/problems/two-sum/) | Easy | 🟢 | 2026-02-12 | | Single-pass HashMap, value→index pattern |
 | 4 | [Group Anagrams](https://leetcode.com/problems/group-anagrams/) | Medium | 🟢 | 2026-02-13 | | Sort key or count key, computeIfAbsent |
-| 5 | [Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/) | Medium | ⬜ | | | |
+| 5 | [Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/) | Medium | 🟢 | 2026-02-13 | | Max-heap + freq map, bucket sort O(n) |
 | 6 | [Encode and Decode Strings](https://leetcode.com/problems/encode-and-decode-strings/) | Medium | ⬜ | | | |
 | 7 | [Product of Array Except Self](https://leetcode.com/problems/product-of-array-except-self/) | Medium | ⬜ | | | |
 | 8 | [Valid Sudoku](https://leetcode.com/problems/valid-sudoku/) | Medium | ⬜ | | | |

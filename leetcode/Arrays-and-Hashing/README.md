@@ -170,6 +170,7 @@ User user = findUser(id).orElseGet(() -> createDefaultUser());
 | Two Sum | `Map<value, index>` | Location: "where did I see it?" |
 | Group Anagrams | `Map<key, List>` | Grouping: "which bucket does this belong to?" |
 | Longest Consecutive Sequence | `HashSet` | Existence + sequence start: "is num-1 absent?" |
+| Top K Frequent Elements | `Map` + `PriorityQueue` | Frequency + ranking: "which k are most frequent?" |
 
 ---
 
@@ -206,6 +207,13 @@ User user = findUser(id).orElseGet(() -> createDefaultUser());
   - Each element visited at most twice
 - **Key insight:** TreeSet sorts (O(log n) per insert) vs HashSet (O(1) per insert)
 - 📄 [LongestConsecutiveSequence.java](./LongestConsecutiveSequence.java)
+
+### 5. Top K Frequent Elements (Medium) ✅
+- **Approach 1:** Frequency map + Max-Heap (`PriorityQueue`) → O(n + m log m)
+- **Approach 2 (Optimal):** Bucket Sort (index = frequency) → O(n)
+- **Key API:** `PriorityQueue` with custom comparator `(a,b) -> b.getValue().compareTo(a.getValue())`
+- **Gotcha:** `entry.getKey()` returns element, `entry.getValue()` returns count — don't mix them up!
+- 📄 [TopKFrequentElements.java](./TopKFrequentElements.java)
 
 ---
 
