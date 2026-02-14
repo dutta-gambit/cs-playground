@@ -171,6 +171,8 @@ User user = findUser(id).orElseGet(() -> createDefaultUser());
 | Group Anagrams | `Map<key, List>` | Grouping: "which bucket does this belong to?" |
 | Longest Consecutive Sequence | `HashSet` | Existence + sequence start: "is num-1 absent?" |
 | Top K Frequent Elements | `Map` + `PriorityQueue` | Frequency + ranking: "which k are most frequent?" |
+| Merge Adjacent Equal Elements | `ArrayList` as stack | Adjacent collapse: "does this equal what's on top?" |
+| Max Points on a Line | `Map<slope, count>` | Grouping: "how many share this slope from anchor?" |
 
 ---
 
@@ -215,6 +217,43 @@ User user = findUser(id).orElseGet(() -> createDefaultUser());
 - **Gotcha:** `entry.getKey()` returns element, `entry.getValue()` returns count — don't mix them up!
 - 📄 [TopKFrequentElements.java](./TopKFrequentElements.java)
 
+### Merge Adjacent Equal Elements (Medium) ✅
+- **Approach 1 (Naive):** Simulation — scan, merge leftmost, rebuild → O(n²) TLE
+- **Approach 2 (Optimal):** Stack — build result left-to-right, chain-react on push → O(n)
+- **Key pattern:** "Adjacent collapse" = Stack. Push element, compare with top, merge if equal, repeat.
+- **Bugs hit:** `==` on `Long` objects (cache trap again!), out-of-bounds from missing bounds checks
+- **Meta-lesson:** When code needs many edge-case patches, the approach is fighting the problem — simpler approach = simpler code
+- 📄 [MergeAdjacentEqualElements.java](./MergeAdjacentEqualElements.java)
+
+### 149. Max Points on a Line (Hard) ✅
+- **Approach:** For each anchor, compute GCD-normalized slopes, count via HashMap
+- **Key trick:** Normalize direction (flip if dx < 0), handle vertical/horizontal, use `"dx/dy"` as key
+- **Time:** O(n²) — optimal (must compare all pairs)
+- 📄 [MaxPointsOnALine.java](./MaxPointsOnALine.java)
+
+---
+
+## 🧠 Pattern Recognition
+
+### "Adjacent Collapse" = Stack
+
+When a problem says "repeatedly merge/remove/collapse adjacent elements":
+
+```
+1. "Am I comparing adjacent elements?"        → Think stack
+2. "Can a merge create new pairs?"             → Definitely stack (chain reaction)
+3. "Am I processing left to right?"            → Stack works naturally
+```
+
+**Examples:** Merge Adjacent Equal, Remove Duplicate Chars, Asteroid Collision, Valid Parentheses
+
+**ArrayList as stack:**
+| Operation | Code | Time |
+|-----------|------|------|
+| peek | `list.get(list.size() - 1)` | O(1) |
+| pop | `list.remove(list.size() - 1)` | O(1) |
+| push | `list.add(value)` | O(1) |
+
 ---
 
 ## 📚 HashMap Reference
@@ -242,8 +281,10 @@ User user = findUser(id).orElseGet(() -> createDefaultUser());
 
 ### `==` vs `.equals()` and the Integer Cache
 - `==` compares **references** for objects, **values** for primitives
-- `Integer` values -128 to 127 are **cached** — `==` works by coincidence, breaks outside this range
+- `Integer`/`Long` values -128 to 127 are **cached** — `==` works by coincidence, breaks outside this range
 - **Always use `.equals()`** for object comparison (or `Objects.equals()` for null-safety)
+- **Exception:** when one side is primitive (`long current`), auto-unboxing makes `==` safe
+  - `result.get(i) == current` where `current` is `long` → unboxes the `Long`, compares values ✅
 
 ### `Map.get()` returns `null`, not `0`
 - Comparing `map.get(key) != 0` causes **NullPointerException** (auto-unboxing `null`)
