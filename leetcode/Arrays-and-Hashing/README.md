@@ -223,7 +223,7 @@ User user = findUser(id).orElseGet(() -> createDefaultUser());
 - **Key pattern:** "Adjacent collapse" = Stack. Push element, compare with top, merge if equal, repeat.
 - **Bugs hit:** `==` on `Long` objects (cache trap again!), out-of-bounds from missing bounds checks
 - **Meta-lesson:** When code needs many edge-case patches, the approach is fighting the problem — simpler approach = simpler code
-- 📄 [MergeAdjacentEqualElements.java](./MergeAdjacentEqualElements.java)
+- 📄 [MergeAdjacentEqualElements.java](../Stacks-and-Queues/MergeAdjacentEqualElements.java)
 
 ### 149. Max Points on a Line (Hard) ✅
 - **Approach:** For each anchor, compute GCD-normalized slopes, count via HashMap

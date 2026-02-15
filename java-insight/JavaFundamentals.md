@@ -10,10 +10,12 @@
             Iterable
                |
            Collection          ← "a group of things"
-           /        \
-         List       Set        ← more specific contracts
-        /    \        \
-  ArrayList  LinkedList  HashSet / TreeSet
+           /    |    \
+         List  Set   Queue     ← more specific contracts
+        /    \    \      \
+  ArrayList  ..  HashSet  Deque  ← extends Queue (both-end ops)
+                            \
+                         ArrayDeque  ← concrete class
 ```
 
 | Interface | Contract | Duplicates? | Ordered? | Indexed? |
@@ -21,6 +23,12 @@
 | `Collection` | Iterate, size, add, contains | Yes | No guarantee | No |
 | `List` | Ordered, indexed access `get(i)` | Yes | ✅ Insertion order | ✅ |
 | `Set` | Unique elements | ❌ No | Depends on impl | No |
+| `Queue` | FIFO: offer/poll/peek | Yes | ✅ FIFO order | No |
+| `Deque` | Both-end ops + stack (push/pop) | Yes | ✅ Insertion order | No |
+
+> ❌ **No `Stack` interface exists.** `Deque` has `push/pop/peek` built in. Naming `Deque<E> stack` is a convention, not compiler-enforced.
+
+> 🔑 **`LinkedList` implements BOTH `List` AND `Deque`.** It's the only class at the intersection. But prefer `ArrayDeque` for stack/queue (faster, less memory). Use `LinkedList` only if you need nulls or both interfaces on the same object.
 
 ---
 
