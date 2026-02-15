@@ -231,6 +231,21 @@ User user = findUser(id).orElseGet(() -> createDefaultUser());
 - **Time:** O(n²) — optimal (must compare all pairs)
 - 📄 [MaxPointsOnALine.java](./MaxPointsOnALine.java)
 
+### 238. Product of Array Except Self (Medium) ✅
+- **Approach 1:** Two arrays (prefix + suffix) → O(n) time, O(n) space
+- **Approach 2 (Optimal):** Build prefix into result, single `suffix` variable right-to-left → O(1) extra space
+- **Key insight:** `result[i]` = product LEFT of `i` × product RIGHT of `i`
+- **Gotcha:** `prefix[i]` = product **before** `i` (excludes `i`), not cumulative product up to `i`
+- 📄 [ProductOfArrayExceptSelf.java](./ProductOfArrayExceptSelf.java)
+
+### 36. Valid Sudoku (Medium) ✅
+- **Approach 1:** Three passes (rows, cols, 3×3 boxes) — clearer
+- **Approach 2:** Single pass with arrays of sets for rows, cols, boxes
+- **Key formula:** Box index = `(i/3)*3 + (j/3)` — maps any cell to its box (0-8)
+- **Trick:** `Set.add()` returns `false` if duplicate → check + insert in one call
+- **Time:** O(1) — board is always 9×9
+- 📄 [ValidSudoku.java](./ValidSudoku.java)
+
 ---
 
 ## 🧠 Pattern Recognition
