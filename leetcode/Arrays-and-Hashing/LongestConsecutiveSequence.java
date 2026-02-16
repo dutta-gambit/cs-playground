@@ -4,73 +4,67 @@ import java.util.*;
  * LeetCode 128 - Longest Consecutive Sequence
  * https://leetcode.com/problems/longest-consecutive-sequence/
  *
- * Approach 1: TreeSet (sorted + dedup) → O(n log n) time
- * - Insert all into TreeSet, iterate in order, track consecutive runs
+ * Approach 1: TreeSet + prev variable → O(n log n) time, O(n) space
+ *   - TreeSet sorts + deduplicates, iterate with prev tracking
+ *   - "prev variable pattern" — track previous value when no index access
  *
- * Approach 2 (Optimal): HashSet + "start of sequence" trick → O(n) time
- * - Only start counting from elements where (num-1) is NOT in set
- * - Each element visited at most twice → O(n)
- *
- * Space: O(n) for both
+ * Approach 2: HashSet "end of sequence" → O(n) time, O(n) space (optimal)
+ *   - Only count from END of sequence (!contains(num+1))
+ *   - Count downward with while loop
+ *   - Each number visited at most twice → O(n) total
  *
  * Key learnings:
- * - TreeSet vs HashSet: TreeSet sorts (O(log n) per op), HashSet doesn't (O(1) per op)
- * - "Start of sequence" check: if (!set.contains(num - 1)) avoids redundant counting
- * - Objects.equals() for Integer comparison (avoids == cache trap)
+ * - TreeSet.add() is O(log n) per op × n = O(n log n) total
+ * - HashSet.add() is O(1) per op × n = O(n) total — per-op vs total cost!
+ * - "prev variable pattern" eliminates need to copy into ArrayList for index access
  */
 
-// --- Approach 1: TreeSet (sorted iteration) ---
+// --- Approach 1: TreeSet + prev variable (O(n log n)) ---
+// class Solution {
+//     public int longestConsecutive(int[] nums) {
+//         if (nums.length <= 1) return nums.length;
+//
+//         Set<Integer> treeSet = new TreeSet<>();
+//         for (int num : nums) treeSet.add(num);
+//
+//         Integer previous = null;
+//         int result = 1;
+//         int count = 1;
+//
+//         for (Integer key : treeSet) {
+//             if (previous != null && key == previous + 1) {
+//                 count++;
+//             } else {
+//                 count = 1;
+//             }
+//             result = Math.max(result, count);
+//             previous = key;
+//         }
+//         return result;
+//     }
+// }
+
+// --- Approach 2: HashSet "end of sequence" (O(n) optimal) ---
 class Solution {
     public int longestConsecutive(int[] nums) {
-        if (nums.length <= 1) {
-            return nums.length;
-        }
+        if (nums.length <= 1) return nums.length;
 
-        Set<Integer> set = new TreeSet<>();
-        for (int i = 0; i < nums.length; i++) {
-            set.add(nums[i]);
-        }
+        Set<Integer> hashSet = new HashSet<>();
+        for (int num : nums) hashSet.add(num);
 
-        if (set.size() <= 1) {
-            return set.size();
-        }
-
-        Iterator<Integer> it = set.iterator();
-        int previous = it.next();
-        int count = 1;
         int result = 1;
-
-        while (it.hasNext()) {
-            int current = it.next();
-            if (Objects.equals(previous, current - 1)) {
-                count++;
+        for (int num : hashSet) {
+            // Only count from END of sequence (no successor)
+            if (!hashSet.contains(num + 1)) {
+                int current = num;
+                int count = 1;
+                while (hashSet.contains(current - 1)) {
+                    count++;
+                    current--;
+                }
                 result = Math.max(result, count);
-            } else {
-                count = 1;
             }
-            previous = current;
         }
-
         return result;
     }
 }
-
-// --- Approach 2: HashSet + start-of-sequence (Optimal O(n)) ---
-// class Solution {
-//     public int longestConsecutive(int[] nums) {
-//         Set<Integer> set = new HashSet<>();
-//         for (int num : nums) set.add(num);
-//
-//         int longest = 0;
-//         for (int num : set) {
-//             if (!set.contains(num - 1)) {   // only start from sequence beginning
-//                 int count = 1;
-//                 while (set.contains(num + count)) {
-//                     count++;
-//                 }
-//                 longest = Math.max(longest, count);
-//             }
-//         }
-//         return longest;
-//     }
-// }

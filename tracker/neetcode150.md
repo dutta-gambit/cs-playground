@@ -16,7 +16,7 @@
 | 6 | [Encode and Decode Strings](https://leetcode.com/problems/encode-and-decode-strings/) | Medium | ⬜ | | | |
 | 7 | [Product of Array Except Self](https://leetcode.com/problems/product-of-array-except-self/) | Medium | 🟢 | 2026-02-15 | | Prefix/suffix products, O(1) space optimization |
 | 8 | [Valid Sudoku](https://leetcode.com/problems/valid-sudoku/) | Medium | 🟢 | 2026-02-15 | | 3-pass or single-pass, box index: (i/3)*3+(j/3) |
-| 9 | [Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence/) | Medium | 🟢 | 2026-02-13 | | TreeSet O(n log n), HashSet O(n) optimal |
+| 9 | [Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence/) | Medium | 🟢 | 2026-02-13 | 2026-02-16 | TreeSet+prev O(n log n), HashSet end-of-seq O(n) |
 
 ---
 

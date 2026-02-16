@@ -203,11 +203,12 @@ User user = findUser(id).orElseGet(() -> createDefaultUser());
 - 📄 [GroupAnagrams.java](./GroupAnagrams.java)
 
 ### 9. Longest Consecutive Sequence (Medium) ✅
-- **Approach 1:** `TreeSet` — sorted + deduped, iterate in order → O(n log n)
-- **Approach 2 (Optimal):** `HashSet` + "start of sequence" trick → O(n)
-  - Only count from elements where `num - 1` is NOT in set
+- **Approach 1:** `TreeSet` + `prev` variable pattern → O(n log n)
+  - "prev variable pattern" — track previous value when iterating without index access
+- **Approach 2 (Optimal):** `HashSet` + "end of sequence" trick → O(n)
+  - Only count from elements where `num + 1` is NOT in set, count downward
   - Each element visited at most twice
-- **Key insight:** TreeSet sorts (O(log n) per insert) vs HashSet (O(1) per insert)
+- **Key insight:** O(log n) per-op × n ops = O(n log n) total. O(1) per-op × n = O(n) total
 - 📄 [LongestConsecutiveSequence.java](./LongestConsecutiveSequence.java)
 
 ### 5. Top K Frequent Elements (Medium) ✅
