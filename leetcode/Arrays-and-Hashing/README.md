@@ -247,9 +247,24 @@ User user = findUser(id).orElseGet(() -> createDefaultUser());
 - **Time:** O(1) — board is always 9×9
 - 📄 [ValidSudoku.java](./ValidSudoku.java)
 
+### 448. Find All Numbers Disappeared in an Array (Easy) ✅
+- **Approach 1:** HashSet → O(n) time, O(n) space
+- **Approach 2 (Optimal):** Negation trick → O(n) time, O(1) extra space
+  - Values in [1,n] → each maps to index (value-1). Negate to mark "exists"
+  - `Math.abs()` to handle already-negated values, `if > 0` to prevent double-negate
+  - Positive indices after marking = missing numbers
+- 📄 [FindDisappearedNumbers.java](./FindDisappearedNumbers.java)
+
 ---
 
 ## 🧠 Pattern Recognition
+
+### "Negation Trick" — O(1) space for [1,n] range problems
+
+When values are in `[1, n]` and you need to mark presence without extra space:
+1. For each value, compute `index = Math.abs(value) - 1`
+2. Negate `nums[index]` to mark "this value exists"
+3. Scan: positive index = that number is missing
 
 ### "Adjacent Collapse" = Stack
 
