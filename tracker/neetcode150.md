@@ -190,7 +190,7 @@
 
 | # | Problem | Difficulty | Status | Date | Revision | Notes |
 |---|---------|-----------|--------|------|----------|-------|
-| 99 | [Climbing Stairs](https://leetcode.com/problems/climbing-stairs/) | Easy | ⬜ | | | |
+| 99 | [Climbing Stairs](https://leetcode.com/problems/climbing-stairs/) | Easy | 🟢 | 2026-02-18 | | Fibonacci, memoization or bottom-up O(1) space |
 | 100 | [Min Cost Climbing Stairs](https://leetcode.com/problems/min-cost-climbing-stairs/) | Easy | ⬜ | | | |
 | 101 | [House Robber](https://leetcode.com/problems/house-robber/) | Medium | ⬜ | | | |
 | 102 | [House Robber II](https://leetcode.com/problems/house-robber-ii/) | Medium | ⬜ | | | |
