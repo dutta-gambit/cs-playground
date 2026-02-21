@@ -32,3 +32,10 @@ return writer;  // count of kept elements
 - **Approach:** Reader `i` scans ahead, writer `j` tracks write position. Skip duplicates, write uniques
 - **Time:** O(n) | **Space:** O(1)
 - 📄 [RemoveDuplicatesSortedArray.java](./RemoveDuplicatesSortedArray.java)
+
+### 283. Move Zeroes (Easy) ✅
+- **Pattern:** Reader-Writer two pointers (in-place compaction)
+- **Approach:** Compact non-zeros to front with writer `j`, then fill remaining with 0
+- **Gotcha:** No need to count zeros first — `j` already tells you where zeros start
+- **Time:** O(n) | **Space:** O(1)
+- 📄 [MoveZeroes.java](./MoveZeroes.java)
