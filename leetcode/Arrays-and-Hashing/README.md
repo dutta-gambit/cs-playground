@@ -260,6 +260,11 @@ User user = findUser(id).orElseGet(() -> createDefaultUser());
 - **Time:** O(n log n) | **Space:** O(n)
 - 📄 [HeightChecker.java](./HeightChecker.java)
 
+### 487. Max Consecutive Ones II (Medium) ✅
+- **Approach:** Track `leftCount` (ones after last zero) and `rightCount` (ones before last zero + flipped zero). Result = max(left + right)
+- **Time:** O(n) | **Space:** O(1)
+- 📄 [MaxConsecutiveOnesII.java](./MaxConsecutiveOnesII.java)
+
 ---
 
 ## 🧠 Pattern Recognition
