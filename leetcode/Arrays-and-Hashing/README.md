@@ -265,6 +265,12 @@ User user = findUser(id).orElseGet(() -> createDefaultUser());
 - **Time:** O(n) | **Space:** O(1)
 - 📄 [MaxConsecutiveOnesII.java](./MaxConsecutiveOnesII.java)
 
+### 414. Third Maximum Number (Easy) ✅
+- **Approach:** Three passes — find 1st, 2nd (excl 1st), 3rd (excl 1st & 2nd)
+- **Gotcha:** `Integer.MIN_VALUE` edge case — use boolean flag to track if 3rd max exists
+- **Time:** O(n) | **Space:** O(1)
+- 📄 [ThirdMaximumNumber.java](./ThirdMaximumNumber.java)
+
 ---
 
 ## 🧠 Pattern Recognition

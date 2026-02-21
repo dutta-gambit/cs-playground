@@ -52,3 +52,10 @@ return writer;  // count of kept elements
 - **Approach:** Skip elements equal to `val`, write everything else at writer `j`
 - **Time:** O(n) | **Space:** O(1)
 - 📄 [RemoveElement.java](./RemoveElement.java)
+
+### 977. Squares of a Sorted Array (Easy) ✅
+- **Pattern:** Opposite-ends two pointers
+- **Approach:** Largest squares at edges → compare `|left|` vs `|right|`, fill result from back
+- **Also solved with:** TreeMap frequency count (O(n log n))
+- **Time:** O(n) | **Space:** O(n)
+- 📄 [SquaresOfSortedArray.java](./SquaresOfSortedArray.java)
