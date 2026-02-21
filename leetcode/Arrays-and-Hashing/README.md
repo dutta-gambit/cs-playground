@@ -255,6 +255,11 @@ User user = findUser(id).orElseGet(() -> createDefaultUser());
   - Positive indices after marking = missing numbers
 - 📄 [FindDisappearedNumbers.java](./FindDisappearedNumbers.java)
 
+### 1051. Height Checker (Easy) ✅
+- **Approach:** Sort a copy with `Arrays.copyOf()` + `Arrays.sort()`, compare with original
+- **Time:** O(n log n) | **Space:** O(n)
+- 📄 [HeightChecker.java](./HeightChecker.java)
+
 ---
 
 ## 🧠 Pattern Recognition
