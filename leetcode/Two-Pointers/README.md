@@ -39,3 +39,10 @@ return writer;  // count of kept elements
 - **Gotcha:** No need to count zeros first — `j` already tells you where zeros start
 - **Time:** O(n) | **Space:** O(1)
 - 📄 [MoveZeroes.java](./MoveZeroes.java)
+
+### 905. Sort Array By Parity (Easy) ✅
+- **Pattern:** Opposite-ends two pointers (partitioning)
+- **Approach:** `evenIndex` fills from left, `oddIndex` fills from right
+- **Follow-up:** Can be done in-place with swaps for O(1) space
+- **Time:** O(n) | **Space:** O(n)
+- 📄 [SortArrayByParity.java](./SortArrayByParity.java)
