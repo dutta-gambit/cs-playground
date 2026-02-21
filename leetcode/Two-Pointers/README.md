@@ -46,3 +46,9 @@ return writer;  // count of kept elements
 - **Follow-up:** Can be done in-place with swaps for O(1) space
 - **Time:** O(n) | **Space:** O(n)
 - 📄 [SortArrayByParity.java](./SortArrayByParity.java)
+
+### 27. Remove Element (Easy) ✅
+- **Pattern:** Reader-Writer two pointers (in-place compaction)
+- **Approach:** Skip elements equal to `val`, write everything else at writer `j`
+- **Time:** O(n) | **Space:** O(1)
+- 📄 [RemoveElement.java](./RemoveElement.java)
