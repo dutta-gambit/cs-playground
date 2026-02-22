@@ -278,6 +278,34 @@ User user = findUser(id).orElseGet(() -> createDefaultUser());
 - **Time:** O(n) | **Space:** O(1)
 - 📄 [PlusOne.java](./PlusOne.java)
 
+### 1275. Find Winner on a Tic Tac Toe Game (Easy) ✅
+- **Approach:** Build board from moves, check rows/cols/diagonals for 3 matching non-empty cells
+- **Time:** O(1) | **Space:** O(1) — board is always 3×3
+- 📄 [TicTacToeWinner.java](./TicTacToeWinner.java)
+
+### 1282. Group the People (Medium) ✅
+- **Approach:** HashMap grouping by size → chunk lists into sublists via `subList`
+- **Time:** O(n) | **Space:** O(n)
+- 📄 [GroupThePeople.java](./GroupThePeople.java)
+
+### 3847. Find the Score Difference in a Game (Easy) ✅
+- **Approach:** Track active player, XOR toggle logic — both swap conditions cancel out
+- **Key formula:** 6th game = `(i+1) % 6 == 0`, not `i % 5 == 0`
+- **Time:** O(n) | **Space:** O(1)
+- 📄 [ScoreDifference.java](./ScoreDifference.java)
+
+### 3848. Check Digitorial Permutation (Easy) ✅
+- **Approach:** Sum digit factorials (order-independent), sort-and-compare for permutation check
+- **Key insight:** Sum is same for all permutations → compute once, check if sum is a permutation of n
+- **Time:** O(d log d) | **Space:** O(d)
+- 📄 [DigitorialPermutation.java](./DigitorialPermutation.java)
+
+### 3849. Maximum Bitwise XOR After Rearrangement (Medium) ✅
+- **Approach:** Greedy — count 0s/1s in t, assign opposite bits from MSB to maximize XOR
+- **Key insight:** XOR=1 when bits differ. Leftmost bits have highest value → greedy from left
+- **Time:** O(n) | **Space:** O(n)
+- 📄 [MaximumXOR.java](./MaximumXOR.java)
+
 ---
 
 ## 🧠 Pattern Recognition
