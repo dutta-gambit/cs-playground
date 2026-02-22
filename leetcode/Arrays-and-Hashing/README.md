@@ -271,6 +271,13 @@ User user = findUser(id).orElseGet(() -> createDefaultUser());
 - **Time:** O(n) | **Space:** O(1)
 - 📄 [ThirdMaximumNumber.java](./ThirdMaximumNumber.java)
 
+### 66. Plus One (Easy) ✅
+- **Approach:** Simulate addition right-to-left with carry
+- **Edge case:** All 9s → new array of `size+1` with `result[0]=1`
+- **Trap:** Don't convert to `int`/`Long` — arrays can be 100+ digits, overflows `Long.MAX_VALUE`
+- **Time:** O(n) | **Space:** O(1)
+- 📄 [PlusOne.java](./PlusOne.java)
+
 ---
 
 ## 🧠 Pattern Recognition
