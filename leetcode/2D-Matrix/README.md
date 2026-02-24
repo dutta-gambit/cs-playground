@@ -18,13 +18,16 @@ int n = mat[0].length;   // number of COLUMNS
 - Given `row`, compute `col = k - row` (eliminates inner loop)
 - Bounds check: `col >= 0 && col < n`
 
-### Common patterns:
-| Pattern | Formula |
-|---------|---------|
-| Main diagonal | `row == col` |
-| Anti-diagonal | `row + col == n - 1` |
-| 3×3 box index (Sudoku) | `(row/3) * 3 + (col/3)` |
-| Boundary check | `row >= 0 && row < m && col >= 0 && col < n` |
+### Spiral traversal (4 boundaries):
+```java
+int top = 0, bottom = m-1, left = 0, right = n-1;
+// → right along top, top++
+// ↓ down along right, right--
+// ← left along bottom (if top<=bottom), bottom--
+// ↑ up along left (if left<=right), left++
+```
+- Never use boundaries as loop counters — use separate `i`/`j`
+- `if` guards before ← and ↑ prevent double-counting on single row/col
 
 ---
 
@@ -36,3 +39,10 @@ int n = mat[0].length;   // number of COLUMNS
 - **Zigzag:** `Collections.reverse()` on even diagonals
 - **Time:** O(m×n) | **Space:** O(min(m,n))
 - 📄 [DiagonalTraverse.java](./DiagonalTraverse.java)
+
+### 54. Spiral Matrix (Medium) ✅
+- **Approach:** 4 boundaries (`top/bottom/left/right`) shrinking inward → ↓ ← ↑
+- **Key insight:** Fix one dimension, traverse the other, then shrink boundary by 1
+- **Gotcha:** `if` guards before ← and ↑ to prevent double-counting
+- **Time:** O(m×n) | **Space:** O(1)
+- 📄 [SpiralMatrix.java](./SpiralMatrix.java)
