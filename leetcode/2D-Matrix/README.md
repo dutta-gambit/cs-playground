@@ -46,3 +46,9 @@ int top = 0, bottom = m-1, left = 0, right = n-1;
 - **Gotcha:** `if` guards before ← and ↑ to prevent double-counting
 - **Time:** O(m×n) | **Space:** O(1)
 - 📄 [SpiralMatrix.java](./SpiralMatrix.java)
+
+### 118. Pascal's Triangle (Easy) ✅
+- **Approach:** Build row by row. Edges = 1, middle = `result[i-1][j-1] + result[i-1][j]`
+- **Gotcha:** Create each row with `new ArrayList<>()` + use `add()`, not `set()`
+- **Time:** O(n²) | **Space:** O(n²)
+- 📄 [PascalsTriangle.java](./PascalsTriangle.java)
