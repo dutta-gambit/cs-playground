@@ -1,0 +1,42 @@
+# Strings
+
+> Problems involving string manipulation, comparison, and pattern matching.
+
+---
+
+## 🧠 String Fundamentals in Java
+
+### Key properties:
+- **Immutable** — can't modify characters in place. `s1 = ","` reassigns the reference, not the object.
+- **`String` vs `char`:** `"A"` is a String (double quotes), `'A'` is a char (single quotes)
+- **`StringBuilder`** — mutable string builder, use for building strings in loops (avoids O(n²) concatenation)
+
+### Common operations:
+
+| Operation | Method | Time |
+|-----------|--------|------|
+| Length | `s.length()` | O(1) |
+| Char at index | `s.charAt(i)` | O(1) |
+| Substring | `s.substring(i, j)` | O(j-i) |
+| To char array | `s.toCharArray()` | O(n) |
+| Compare | `s.equals(t)` | O(n) |
+
+### String ↔ Number patterns:
+```java
+// Right-to-left digit processing (Add Binary, Plus One)
+int sum = carry;
+sum += a.charAt(i--) - '0';
+digit = sum % base;    // current digit
+carry = sum / base;    // carry to next position
+```
+
+---
+
+## 🧩 Problems Solved
+
+### 67. Add Binary (Easy) ✅
+- **Approach 1:** Pad shorter string, explicit if-else for each binary addition case
+- **Approach 2 (Optimal):** Right-to-left with `sum % 2` (digit) and `sum / 2` (carry)
+- **Key insight:** Same pattern as Plus One — no need to pad, `i >= 0 || j >= 0` handles different lengths
+- **Time:** O(max(m,n)) | **Space:** O(max(m,n))
+- 📄 [AddBinary.java](./AddBinary.java)

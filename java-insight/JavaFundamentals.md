@@ -145,3 +145,41 @@ map.getOrDefault(key, 0)  // returns 0 if key not found (instead of null)
 char c = 'e';
 int index = c - 'a';  // numeric promotion: 101 - 97 = 4
 ```
+
+---
+
+## 🔤 Character Encoding: ASCII vs Unicode
+
+### ASCII (128 characters, 7 bits)
+```
+48-57:   '0' to '9'
+65-90:   'A' to 'Z'
+97-122:  'a' to 'z'
+```
+
+### Unicode (150K+ characters, all languages)
+- Assigns a unique **code point** to every character in every language
+- First 128 code points = identical to ASCII (backwards-compatible)
+- `U+0041 = 'A'`, `U+0905 = 'अ'`, `U+1F600 = '😀'`
+
+### Encodings (how Unicode is stored in bytes)
+
+| Encoding | Bytes/char | Used by |
+|----------|-----------|---------|
+| **UTF-8** | 1-4 (variable) | Web, Linux, JSON |
+| **UTF-16** | 2-4 (variable) | **Java `char`**, JavaScript |
+| **UTF-32** | 4 (fixed) | Rare |
+
+> 🔑 Java `char` = 2 bytes (UTF-16). Emojis need 4 bytes → "surrogate pair" (two chars).
+
+### Interview tricks using ASCII values
+
+```java
+int digit = ch - '0';         // '5' → 5
+char lower = (char)(ch + 32); // 'A' → 'a'
+boolean isLower = ch >= 'a' && ch <= 'z';
+
+// Frequency array (26 letters)
+int[] freq = new int[26];
+freq[ch - 'a']++;             // 'a'→0, 'b'→1, ..., 'z'→25
+```
