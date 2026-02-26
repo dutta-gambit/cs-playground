@@ -40,3 +40,16 @@ carry = sum / base;    // carry to next position
 - **Key insight:** Same pattern as Plus One — no need to pad, `i >= 0 || j >= 0` handles different lengths
 - **Time:** O(max(m,n)) | **Space:** O(max(m,n))
 - 📄 [AddBinary.java](./AddBinary.java)
+
+### 28. Find the Index of the First Occurrence (Easy) ✅
+- **Approach 1:** `indexOf()` — one-liner
+- **Approach 2:** Manual sliding window — `substring(i, i+m).equals(needle)`
+- **Key:** Loop bound is `i <= n - m` (not `i < n`)
+- **Time:** O(n×m) | **Space:** O(m)
+- 📄 [FindFirstOccurrence.java](./FindFirstOccurrence.java)
+
+### 14. Longest Common Prefix (Easy) ✅
+- **Approach:** Start with shortest string, check `startsWith()` against all, trim from end if not
+- **Gotcha:** Use `.isEmpty()` not `!= ""` for string comparison
+- **Time:** O(n×m²) | **Space:** O(1)
+- 📄 [LongestCommonPrefix.java](./LongestCommonPrefix.java)
