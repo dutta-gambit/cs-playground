@@ -53,3 +53,9 @@ carry = sum / base;    // carry to next position
 - **Gotcha:** Use `.isEmpty()` not `!= ""` for string comparison
 - **Time:** O(n×m²) | **Space:** O(1)
 - 📄 [LongestCommonPrefix.java](./LongestCommonPrefix.java)
+
+### 344. Reverse String (Easy) ✅
+- **Approach:** Two pointers — swap from both ends inward
+- **Key:** `char[]` uses `s[i]` (mutable), `String` uses `charAt(i)` (immutable)
+- **Time:** O(n) | **Space:** O(1)
+- 📄 [ReverseString.java](./ReverseString.java)
