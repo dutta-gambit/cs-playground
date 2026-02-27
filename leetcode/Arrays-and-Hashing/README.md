@@ -306,6 +306,13 @@ User user = findUser(id).orElseGet(() -> createDefaultUser());
 - **Time:** O(n) | **Space:** O(n)
 - 📄 [MaximumXOR.java](./MaximumXOR.java)
 
+### 189. Rotate Array (Medium) ✅
+- **Approach 1:** Extra array — copy last k first, then rest → O(n) time, O(n) space
+- **Approach 2 (Optimal):** Triple reverse — reverse all, first k, rest → O(n) time, O(1) space
+- **Approach 3:** Cyclic replacement — follow chain `(i+k)%n` → O(n) time, O(1) space
+- **Key insight:** Array = `[A|B]`, want `[B|A]`. Reverse all → fix each half
+- 📄 [RotateArray.java](./RotateArray.java)
+
 ---
 
 ## 🧠 Pattern Recognition

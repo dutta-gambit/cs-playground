@@ -1,61 +1,52 @@
-# Two Pointers
+# Two Pointers / Sliding Window
 
-> Problems where two pointers traverse an array/string to find pairs, partition, or compact elements.
+> Problems using two pointers or sliding window technique on arrays and strings.
 
 ---
 
-## 🧠 Two Pointer Patterns
+## 🧠 Fundamentals
 
-| Pattern | How | Example |
-|---------|-----|---------|
-| **Opposite ends** | `left=0, right=n-1`, move inward | Valid Palindrome, Two Sum II, Container With Most Water |
-| **Reader-Writer** | Reader scans, writer tracks write position | Remove Duplicates (in-place compaction) |
-| **Fast-Slow** | Fast moves 2x speed of slow | Linked list cycle detection |
+### Two Pointers:
+- **Opposite ends:** `i=0, j=n-1` → move inward (e.g., Two Sum II, Reverse String)
+- **Same direction:** `i=0, j=0` → sliding window (e.g., Min Subarray Sum)
 
-### Reader-Writer pattern (in-place):
+### Sliding Window template:
 ```java
-int writer = 1;
-for (int reader = 1; reader < n; reader++) {
-    if (shouldKeep(nums[reader])) {
-        nums[writer++] = nums[reader];
+int i = 0;
+for (int j = 0; j < n; j++) {
+    // expand: add nums[j] to window
+    while (condition met) {
+        // record result
+        // shrink: remove nums[i], i++
     }
 }
-return writer;  // count of kept elements
+```
+
+### Key rules:
+- `while` (not `if`) for shrinking — finds minimum by shrinking as much as possible
+- Start `total = 0`, not `nums[0]` — avoid double-counting
+- Window size depends on when `j++` happens:
+  - `add then j++` → size = `j - i`
+  - `j++ then add` → size = `j - i + 1`
+
+### Subarray vs Subsequence vs Subset:
+```
+Subarray ⊂ Subsequence ⊂ Subset
+contiguous + ordered → ordered + gaps OK → any elements, any order
 ```
 
 ---
 
 ## 🧩 Problems Solved
 
-### 26. Remove Duplicates from Sorted Array (Easy) ✅
-- **Pattern:** Reader-Writer two pointers (in-place compaction)
-- **Approach:** Reader `i` scans ahead, writer `j` tracks write position. Skip duplicates, write uniques
+### 167. Two Sum II (Medium) ✅
+- **Approach:** Two pointers from both ends, move based on sum vs target
+- **Key:** Sorted property guarantees moving right gives smaller sum, left gives larger
 - **Time:** O(n) | **Space:** O(1)
-- 📄 [RemoveDuplicatesSortedArray.java](./RemoveDuplicatesSortedArray.java)
+- 📄 [TwoSumII.java](./TwoSumII.java)
 
-### 283. Move Zeroes (Easy) ✅
-- **Pattern:** Reader-Writer two pointers (in-place compaction)
-- **Approach:** Compact non-zeros to front with writer `j`, then fill remaining with 0
-- **Gotcha:** No need to count zeros first — `j` already tells you where zeros start
+### 209. Minimum Size Subarray Sum (Medium) ✅
+- **Approach:** Sliding window — expand `j`, shrink `i` with `while` (not `if`)
+- **Gotcha:** `while` shrinks all the way, `if` only shrinks once (misses smaller windows)
 - **Time:** O(n) | **Space:** O(1)
-- 📄 [MoveZeroes.java](./MoveZeroes.java)
-
-### 905. Sort Array By Parity (Easy) ✅
-- **Pattern:** Opposite-ends two pointers (partitioning)
-- **Approach:** `evenIndex` fills from left, `oddIndex` fills from right
-- **Follow-up:** Can be done in-place with swaps for O(1) space
-- **Time:** O(n) | **Space:** O(n)
-- 📄 [SortArrayByParity.java](./SortArrayByParity.java)
-
-### 27. Remove Element (Easy) ✅
-- **Pattern:** Reader-Writer two pointers (in-place compaction)
-- **Approach:** Skip elements equal to `val`, write everything else at writer `j`
-- **Time:** O(n) | **Space:** O(1)
-- 📄 [RemoveElement.java](./RemoveElement.java)
-
-### 977. Squares of a Sorted Array (Easy) ✅
-- **Pattern:** Opposite-ends two pointers
-- **Approach:** Largest squares at edges → compare `|left|` vs `|right|`, fill result from back
-- **Also solved with:** TreeMap frequency count (O(n log n))
-- **Time:** O(n) | **Space:** O(n)
-- 📄 [SquaresOfSortedArray.java](./SquaresOfSortedArray.java)
+- 📄 [MinSubarraySum.java](./MinSubarraySum.java)
