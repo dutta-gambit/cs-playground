@@ -313,6 +313,14 @@ User user = findUser(id).orElseGet(() -> createDefaultUser());
 - **Key insight:** Array = `[A|B]`, want `[B|A]`. Reverse all → fix each half
 - 📄 [RotateArray.java](./RotateArray.java)
 
+### Smallest Pair With Different Frequencies (Easy) ✅
+- **Approach:** Frequency map + sorted distinct pairs scan — first valid pair = answer
+- **Key insight:** Sort → skip duplicates → first `(x, y)` with `freq(x) != freq(y)` is guaranteed smallest
+- **Bugs hit:** `Map.add()` doesn't exist (use `put()`), `nums.lenth` typo, `i` never incremented → infinite loop, missing `[-1,-1]` return
+- **Gotcha:** Use `.equals()` not `!=` when comparing `Integer` objects from `Map.get()`
+- **Time:** O(n log n) | **Space:** O(n)
+- 📄 [SmallestPairDifferentFrequencies.java](./SmallestPairDifferentFrequencies.java)
+
 ---
 
 ## 🧠 Pattern Recognition

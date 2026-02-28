@@ -59,3 +59,11 @@ carry = sum / base;    // carry to next position
 - **Key:** `char[]` uses `s[i]` (mutable), `String` uses `charAt(i)` (immutable)
 - **Time:** O(n) | **Space:** O(1)
 - 📄 [ReverseString.java](./ReverseString.java)
+
+### Merge Close Characters (Medium) ✅
+- **Approach:** Simulation — `StringBuilder` + restart-scan loop
+- **Key insight:** After each merge (delete right char), indices shift → must restart scan from index 0
+- **Pattern:** `!merged` flag in outer loop short-circuits scan, `while` restarts from beginning
+- **Bug hit:** `new StringBuilder()` (empty) instead of `new StringBuilder(s)` — loop never ran since `sb.length() == 0`
+- **Time:** O(n³) worst case, n ≤ 100 | **Space:** O(n)
+- 📄 [MergeCloseCharacters.java](./MergeCloseCharacters.java)

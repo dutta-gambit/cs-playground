@@ -52,3 +52,9 @@ int top = 0, bottom = m-1, left = 0, right = n-1;
 - **Gotcha:** Create each row with `new ArrayList<>()` + use `add()`, not `set()`
 - **Time:** O(n²) | **Space:** O(n²)
 - 📄 [PascalsTriangle.java](./PascalsTriangle.java)
+
+### 119. Pascal's Triangle II (Easy) ✅
+- **Approach:** Build full triangle, return `rowIndex`-th row
+- **Same gotchas:** `add()` not `set()`, inner loop `j <= i`, edge check `j == i`
+- **Time:** O(n²) | **Space:** O(n²)
+- 📄 [PascalsTriangleII.java](./PascalsTriangleII.java)
