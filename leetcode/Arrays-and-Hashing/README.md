@@ -321,6 +321,31 @@ User user = findUser(id).orElseGet(() -> createDefaultUser());
 - **Time:** O(n log n) | **Space:** O(n)
 - 📄 [SmallestPairDifferentFrequencies.java](./SmallestPairDifferentFrequencies.java)
 
+### 705. Design HashSet (Easy) 📖 — Reference
+- **Approach 1 (My naive):** `ArrayList` with linear scan — O(n) per operation
+- **Approach 2 (Bucket-based):** Array of lists, `key % MAX_LEN` for bucket index, chaining for collisions — O(n/k) average
+- **Key concept:** Hash function maps key → bucket index. Collisions handled by list within bucket.
+- 📄 [DesignHashSet.java](./DesignHashSet.java)
+
+### 706. Design HashMap (Easy) 📖 — Reference
+- **Approach 1 (My naive):** Direct address table `int[1_000_001]` — O(1) but only works for bounded integer keys
+- **Approach 2 (Bucket-based):** Array of `List<Pair<K,V>>`, same hashing + chaining as HashSet but stores key-value pairs
+- **Key difference from HashSet:** `put()` must handle both insert AND update
+- 📄 [DesignHashMap.java](./DesignHashMap.java)
+
+### 136. Single Number (Easy) ✅
+- **Approach:** XOR all elements — pairs cancel (`a ^ a = 0`), single remains (`a ^ 0 = a`)
+- **Key insight:** XOR is the **only** approach for O(n) time + O(1) space. HashSet/HashMap use O(n) space, sorting uses O(n log n) time.
+- **Time:** O(n) | **Space:** O(1)
+- 📄 [SingleNumber.java](./SingleNumber.java)
+
+### 349. Intersection of Two Arrays (Easy) ✅
+- **Approach:** HashMap from `nums1`, scan `nums2` — mark visited with `-1` to avoid duplicates
+- **Bug hit:** Used `nums1[i]` instead of `nums2[i]` in second loop — wrong array with shared loop variable
+- **Simpler alt:** HashSet (only need existence, not frequency)
+- **Time:** O(n + m) | **Space:** O(n)
+- 📄 [IntersectionOfTwoArrays.java](./IntersectionOfTwoArrays.java)
+
 ---
 
 ## 🧠 Pattern Recognition
