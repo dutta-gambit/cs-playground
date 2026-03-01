@@ -74,3 +74,10 @@ carry = sum / base;    // carry to next position
 - **Takeaway:** "Remove trailing X" → pointer from the end, not "iterate and rebuild"
 - **Time:** O(n) | **Space:** O(1)
 - 📄 [TrimTrailingVowels.java](./TrimTrailingVowels.java)
+
+### 151. Reverse Words in a String (Medium) ✅
+- **Approach 1 (First attempt):** Manual char-by-char split into word list + reverse — failed on multiple/leading/trailing spaces (empty strings sneak into list)
+- **Approach 2 (Optimal):** `trim()` + `split("\\s+")` + reverse loop
+- **Key insight:** `trim()` + `split("\\s+")` handles all whitespace edge cases in one line
+- **Time:** O(n) | **Space:** O(n)
+- 📄 [ReverseWords.java](./ReverseWords.java)
