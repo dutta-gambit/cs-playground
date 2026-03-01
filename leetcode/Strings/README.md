@@ -67,3 +67,10 @@ carry = sum / base;    // carry to next position
 - **Bug hit:** `new StringBuilder()` (empty) instead of `new StringBuilder(s)` — loop never ran since `sb.length() == 0`
 - **Time:** O(n³) worst case, n ≤ 100 | **Space:** O(n)
 - 📄 [MergeCloseCharacters.java](./MergeCloseCharacters.java)
+
+### Trim Trailing Vowels (Easy) ✅ — Weekly Contest
+- **Approach 1 (Submitted):** Reverse scan with boolean flag + `StringBuilder.reverse()` — verbose
+- **Approach 2 (Optimal):** Pointer from end — find last non-vowel, `substring(0, i+1)`
+- **Takeaway:** "Remove trailing X" → pointer from the end, not "iterate and rebuild"
+- **Time:** O(n) | **Space:** O(1)
+- 📄 [TrimTrailingVowels.java](./TrimTrailingVowels.java)

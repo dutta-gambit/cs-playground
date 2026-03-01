@@ -28,3 +28,11 @@
 - **Approach 2:** Bottom-up with two variables → O(n) time, O(1) space
 - **Key insight:** "How many ways" with 1-or-2 choices = Fibonacci in disguise
 - 📄 [ClimbingStairs.java](./ClimbingStairs.java)
+
+### Minimum Cost to Split into Ones (Medium) ✅ — Weekly Contest
+- **Pattern:** Triangular numbers — `f(n) = n*(n-1)/2`
+- **Approach 1 (Submitted):** Recursion — `minCost(n) = (n-1) + minCost(n-1)`, always split as `(1, n-1)`
+- **Approach 2 (O(1)):** Direct formula `n*(n-1)/2`
+- **Penalty:** Returned 1 for `n=1` instead of 0 (no split needed = 0 cost)
+- **Key insight:** Spotted pattern by computing `n=1..7` by hand, recognized triangular numbers
+- 📄 [MinCostSplitIntoOnes.java](./MinCostSplitIntoOnes.java)
