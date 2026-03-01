@@ -81,3 +81,10 @@ carry = sum / base;    // carry to next position
 - **Key insight:** `trim()` + `split("\\s+")` handles all whitespace edge cases in one line
 - **Time:** O(n) | **Space:** O(n)
 - 📄 [ReverseWords.java](./ReverseWords.java)
+
+### 557. Reverse Words in a String III (Easy) ✅
+- **Approach:** Split → two-pointer swap on `char[]` per word → rejoin
+- **Syntax bugs hit:** `"//s+"` (wrong regex), `.charAt()` on `char[]` (use `str[j]`), `sb.append(s)` instead of reversed word
+- **Key:** `sb.append(char[])` works directly — no need for `new String()`
+- **Time:** O(n) | **Space:** O(n)
+- 📄 [ReverseWordsIII.java](./ReverseWordsIII.java)
