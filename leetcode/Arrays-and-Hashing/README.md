@@ -346,6 +346,20 @@ User user = findUser(id).orElseGet(() -> createDefaultUser());
 - **Time:** O(n + m) | **Space:** O(n)
 - 📄 [IntersectionOfTwoArrays.java](./IntersectionOfTwoArrays.java)
 
+### 202. Happy Number (Easy) ✅
+- **Approach:** HashSet cycle detection + digit extraction (`% 10`, `/ 10`)
+- **Key structure:** Two nested loops — inner extracts digits & sums squares, outer repeats until `sum == 1` or cycle
+- **Bugs hit:** Set check inside inner loop (partial sums), missing `n = sum`, missing `sum == 1` check
+- **Time:** O(log n) per step | **Space:** O(k)
+- 📄 [HappyNumber.java](./HappyNumber.java)
+
+### 205. Isomorphic Strings (Easy) ✅
+- **Wrong approach:** Frequency counting — fails for `"abab"` vs `"cddc"` (same frequencies, not isomorphic)
+- **Correct approach:** Two `int[256]` mapping arrays (s→t and t→s), walk position by position
+- **Key insight:** Mapping must be **bijective** — need both directions to catch `"ab"` → `"aa"` (two chars map to same target)
+- **Time:** O(n) | **Space:** O(1)
+- 📄 [IsomorphicStrings.java](./IsomorphicStrings.java)
+
 ---
 
 ## 🧠 Pattern Recognition
