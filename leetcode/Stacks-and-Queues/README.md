@@ -23,7 +23,7 @@
    Stack class exists but is legacy (extends Vector) — never use it.
 ```
 
-### LinkedList implements BOTH interfaces:
+### LinkedList implements BOTH interfaces: 
 ```java
 public class LinkedList<E> implements List<E>, Deque<E> { ... }
 ```
@@ -190,8 +190,8 @@ Add to front:  head = (head - 1 + capacity) % capacity;  array[head] = e
 
 ## 🏢 ArrayDeque vs LinkedList
 
-| | `ArrayDeque` | `LinkedList` |
-|--|-------------|-------------|
+| ----------| `ArrayDeque` | `LinkedList` |
+|-----------|-------------|-------------|
 | Backed by | Circular array | Doubly-linked list |
 | Speed | ✅ Faster (cache-friendly) | ❌ Slower (pointer chasing) |
 | Memory | ✅ Less (just an array) | ❌ More (prev + next per node) |
