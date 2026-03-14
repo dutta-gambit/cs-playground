@@ -36,12 +36,16 @@ Meta, Google, Apple, Intuit, Adobe, InMobi, OpenAI, Anthropic
 
 ### 6. Linked List — IN PROGRESS
 - Reverse Linked List (206) — done, iterative three-pointer approach solid
-- Design Linked List (707) — done, singly linked list with head + size tracking
-- Understands: node structure, traversal, insertion, deletion, head edge cases
+- Design Linked List (707) — done, both without and with dummy/sentinel node
+- Linked List Cycle (141) — done, Floyd's Phase 1 (slow/fast detection) solid
+- Linked List Cycle II (142) — done, HashMap approach + Floyd's Phase 2 (O(1) space)
+- Intersection of Two Lists (160) — HashMap approach done, O(1) space approach in progress
+- Understands: node structure, traversal, insertion, deletion, head edge cases, sentinel nodes
 - Learned prev/curr/next march pattern for reversal
-- Knows about sentinel/dummy node trick (will use in LRU Cache)
-- **Gaps:** Two pointer technique (fast/slow), cycle detection, merge sorted lists, DLL, LRU Cache
-- **Status:** Singly linked list fundamentals solid. Working through LeetCode Explore card.
+- Learned slow/fast pointer pattern for cycle detection
+- **Needs revisit:** Floyd's Phase 2 proof (why F = C-a works) — not yet fully confident
+- **Gaps:** Intersection O(1) space, merge sorted lists, DLL, Circular LL, LRU Cache
+- **Status:** SLL fundamentals and two-pointer technique solid. Working through LeetCode Explore card.
 - **Current track:** SLL → Two Pointers → Classic Problems → DLL → Circular LL → LRU Cache
 
 ### 7. Trees — NOT STARTED
@@ -90,4 +94,4 @@ Meta, Google, Apple, Intuit, Adobe, InMobi, OpenAI, Anthropic
 
 ## Session Log
 - **2026-03-10:** Initial assessment. Arrays & Hashing strong. Starting to deepen Two Pointers and Sliding Window.
-- **2026-03-14:** Started Linked List topic. Covered SLL fundamentals — node structure, reversal (LC 206), Design Linked List (LC 707). Pointer manipulation was initially fuzzy but clicking now. Following LeetCode Explore card alongside buddy sessions.
+- **2026-03-14:** Started Linked List topic. Covered SLL fundamentals — reversal (206), Design LinkedList (707) with dummy node, cycle detection (141), cycle start (142) with both HashMap and Floyd's, started intersection (160). Floyd's Phase 2 proof needs revisit. Following LeetCode Explore card.
