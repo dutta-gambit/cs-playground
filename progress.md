@@ -49,16 +49,19 @@ Meta, Google, Apple, Intuit, Adobe, InMobi, OpenAI, Anthropic
 - **Current track:** SLL → Two Pointers → Classic Problems → DLL → Circular LL → LRU Cache
 
 ### 7. Trees — IN PROGRESS
-- Inorder Traversal (94) — done, recursive helper carrying the result list
-- Preorder Traversal (144) — done, recursive helper
-- Postorder Traversal (145) — done, recursive helper
+- Inorder Traversal (94) — done recursive + iterative (dive-left explicit stack)
+- Preorder Traversal (144) — done recursive + iterative (process-on-pop, push both children, LIFO order)
+- Postorder Traversal (145) — done recursive + iterative BOTH ways (reverse-trick + principled `prev`-pointer single pass)
 - Level-Order / BFS (102) — pattern worked through (size-snapshot queue); not yet committed as a solution file
 - Understands: inorder/preorder/postorder are DFS; recursion rides the implicit call stack (frames push/pop, space O(h))
-- Learned iterative DFS — converting recursion to an explicit `Deque` stack (iterative inorder)
+- **Iterative DFS mental model SOLID** — the "wall" (position of `result.add`) = # recursive calls before processing = # resume points = conversion difficulty: preorder 0 (process-on-pop), inorder 1 (dive-left), postorder 2 (peek + `prev`)
+- Internalized: left subtree = prerequisite (node waits → push), right = follow-up (clean handoff → move `curr`); LIFO push-order reasoning
+- Understands auxiliary vs output space; preorder skew loophole (O(1) on pure left-skew) vs inorder/postorder genuinely O(h)
 - Understands BFS = FIFO queue, level-by-level; three impl variants (size snapshot / null sentinel / recursive DFS-by-depth)
 - Java depth: `ArrayDeque` vs `LinkedList` (array vs nodes, cache/GC, null handling), `Deque` vs `Queue` (narrowest interface), `ArrayDeque` as default container for both stack and queue
+- **Trap hit & understood:** applied inorder dive-mechanics to the postorder reverse-trick → got inorder out; learned the trick rides on PREORDER mechanics
 - **Gaps:** BST operations, tree construction, height/diameter, path sum, LCA, validate BST, serialize/deserialize, and the broader tree problem patterns
-- **Status:** Traversal foundation solid (DFS recursive + iterative, BFS). Notes captured in leetcode/Binary-Tree/README.md. Ready to move into tree problem-solving patterns.
+- **Status:** Traversal foundation rock-solid — all 3 DFS traversals recursive + iterative with full intuition, BFS understood. Notes in leetcode/Binary-Tree/README.md. Next: tree problem patterns (height/diameter via postorder aggregation, validate-BST via inorder).
 
 ### 8. Tries — NOT STARTED
 - **Status:** Topic not yet attempted.
@@ -104,4 +107,4 @@ Meta, Google, Apple, Intuit, Adobe, InMobi, OpenAI, Anthropic
 ## Session Log
 - **2026-03-10:** Initial assessment. Arrays & Hashing strong. Starting to deepen Two Pointers and Sliding Window.
 - **2026-03-14:** Started Linked List topic. Covered SLL fundamentals — reversal (206), Design LinkedList (707) with dummy node, cycle detection (141), cycle start (142) with both HashMap and Floyd's, started intersection (160). Floyd's Phase 2 proof needs revisit. Following LeetCode Explore card.
-- **2026-05-27:** Started Trees. Inorder/preorder/postorder (94/144/145) done recursively. Connected DFS → implicit call stack → explicit `Deque` (iterative inorder). Covered BFS/level-order with the size-snapshot queue pattern + variants. Deep-dived container choice: `ArrayDeque` vs `LinkedList`, `Deque` vs `Queue`. Notes written up in Binary-Tree/README.md.
+- **2026-05-27:** Started Trees. All three traversals (94/144/145) done **recursive and iterative**. Built the full iterative-DFS mental model — the "wall"/resume-points framework (preorder 0, inorder 1, postorder 2), dive-left as prerequisite-waiting, LIFO push ordering. Postorder both ways: reverse-trick (after hitting the classic inorder-mechanics trap) and the principled `prev`-pointer single pass. Also covered BFS/level-order (size-snapshot + variants), container choice (`ArrayDeque` vs `LinkedList`, `Deque` vs `Queue`), and auxiliary-vs-output space. Notes fully written up in Binary-Tree/README.md.
