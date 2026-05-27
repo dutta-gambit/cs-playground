@@ -48,8 +48,17 @@ Meta, Google, Apple, Intuit, Adobe, InMobi, OpenAI, Anthropic
 - **Status:** SLL fundamentals and two-pointer technique solid. Working through LeetCode Explore card.
 - **Current track:** SLL → Two Pointers → Classic Problems → DLL → Circular LL → LRU Cache
 
-### 7. Trees — NOT STARTED
-- **Status:** Topic not yet attempted.
+### 7. Trees — IN PROGRESS
+- Inorder Traversal (94) — done, recursive helper carrying the result list
+- Preorder Traversal (144) — done, recursive helper
+- Postorder Traversal (145) — done, recursive helper
+- Level-Order / BFS (102) — pattern worked through (size-snapshot queue); not yet committed as a solution file
+- Understands: inorder/preorder/postorder are DFS; recursion rides the implicit call stack (frames push/pop, space O(h))
+- Learned iterative DFS — converting recursion to an explicit `Deque` stack (iterative inorder)
+- Understands BFS = FIFO queue, level-by-level; three impl variants (size snapshot / null sentinel / recursive DFS-by-depth)
+- Java depth: `ArrayDeque` vs `LinkedList` (array vs nodes, cache/GC, null handling), `Deque` vs `Queue` (narrowest interface), `ArrayDeque` as default container for both stack and queue
+- **Gaps:** BST operations, tree construction, height/diameter, path sum, LCA, validate BST, serialize/deserialize, and the broader tree problem patterns
+- **Status:** Traversal foundation solid (DFS recursive + iterative, BFS). Notes captured in leetcode/Binary-Tree/README.md. Ready to move into tree problem-solving patterns.
 
 ### 8. Tries — NOT STARTED
 - **Status:** Topic not yet attempted.
@@ -95,3 +104,4 @@ Meta, Google, Apple, Intuit, Adobe, InMobi, OpenAI, Anthropic
 ## Session Log
 - **2026-03-10:** Initial assessment. Arrays & Hashing strong. Starting to deepen Two Pointers and Sliding Window.
 - **2026-03-14:** Started Linked List topic. Covered SLL fundamentals — reversal (206), Design LinkedList (707) with dummy node, cycle detection (141), cycle start (142) with both HashMap and Floyd's, started intersection (160). Floyd's Phase 2 proof needs revisit. Following LeetCode Explore card.
+- **2026-05-27:** Started Trees. Inorder/preorder/postorder (94/144/145) done recursively. Connected DFS → implicit call stack → explicit `Deque` (iterative inorder). Covered BFS/level-order with the size-snapshot queue pattern + variants. Deep-dived container choice: `ArrayDeque` vs `LinkedList`, `Deque` vs `Queue`. Notes written up in Binary-Tree/README.md.
