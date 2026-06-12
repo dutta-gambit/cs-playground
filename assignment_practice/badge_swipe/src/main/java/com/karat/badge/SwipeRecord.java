@@ -35,6 +35,7 @@ public class SwipeRecord {
      *   "00:00" -> 0
      *   "12:00" -> 720
      *   "13:45" -> 825      (13 * 60 + 45)
+     *   "13:55" -> 835
      *   "23:59" -> 1439
      *
      * Part 1 TODO: implement the parsing. The skeleton always returns 0, which

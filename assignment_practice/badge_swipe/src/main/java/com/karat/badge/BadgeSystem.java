@@ -120,17 +120,13 @@ public class BadgeSystem {
      * TODO: implement.
      */
     public Map<String, List<String>> bestViolationWindow() {
-
           List<SwipeRecord> records = getRecords();
           Map<String, List<String>> result = new HashMap<>();
-
-
           Map<String, List<SwipeRecord>> groupBySwap = new HashMap<>();
-
+          
           for(SwipeRecord record : records){
             groupBySwap.computeIfAbsent(record.getName(), k -> new ArrayList<>()).add(record);
           }
-
         for(Map.Entry<String, List<SwipeRecord>> entry : groupBySwap.entrySet()){
             String personName = entry.getKey();
 
@@ -157,7 +153,6 @@ public class BadgeSystem {
                     }
 
                 }
-
                 if(count> bestCount){
                     bestCount = count;
                     bestStart = i;
@@ -165,19 +160,14 @@ public class BadgeSystem {
                 }
 
             }
-
             if(bestCount >= 3){
                 List<String> timeStrings = new ArrayList<>();
                 for(int k = bestStart; k <= bestEnd; k++){
                     timeStrings.add(rSwipeRecords.get(k).getTime());
                 }
                 result.put(personName, timeStrings);
-            }
-            
+            } 
         }
-
-
-          
         return result;
     }
 }

@@ -53,11 +53,9 @@ public class LogFile {
         }
         return new LogFile(parsed);
     }
-
     public List<LogEntry> getEntries() {
         return entries;
     }
-
     public int countJourneys() {
         int numberOfCompleteJourney = 0;
         for (LogEntry entry : getEntries()) {
@@ -67,7 +65,6 @@ public class LogFile {
         }
         return numberOfCompleteJourney;
     }
-
     public Map<String, Integer> catchSpeeders() {
         List<LogEntry> sortedEntries = new ArrayList<>(getEntries());
         sortedEntries.sort(Comparator.comparingDouble(LogEntry::getTimestamp));
@@ -78,17 +75,13 @@ public class LogFile {
                 .computeIfAbsent(entry.getLicensePlate(), k -> new ArrayList<>())
                 .add(entry);
         }
-
         Map<String, Integer> violatingJourneysByPlate = new HashMap<>();
-
         for (Map.Entry<String, List<LogEntry>> plateEntries : entriesByPlate.entrySet()) {
             String plate = plateEntries.getKey();
             List<LogEntry> currentJourney = new ArrayList<>();
             int violations = 0;
-
             for (LogEntry entry : plateEntries.getValue()) {
                 String boothType = entry.getBoothType();
-
                 if ("ENTRY".equals(boothType)) {
                     currentJourney = new ArrayList<>();
                     currentJourney.add(entry);
@@ -101,12 +94,10 @@ public class LogFile {
                     }
                 }
             }
-
             if (violations > 0) {
                 violatingJourneysByPlate.put(plate, violations);
             }
         }
-
         return violatingJourneysByPlate;
     }
 
@@ -114,7 +105,6 @@ public class LogFile {
         int segmentsAt120OrAbove = 0;
         for (int i = 1; i < journey.size(); i++) {
             double dt = journey.get(i).getTimestamp() - journey.get(i - 1).getTimestamp();
-
             if (dt <= SINGLE_SEGMENT_THRESHOLD_SECONDS) {
                 return true;
             }
